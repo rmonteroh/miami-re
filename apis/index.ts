@@ -1,0 +1,1 @@
+export { default as propertiesApi } from './propertiesApi'
