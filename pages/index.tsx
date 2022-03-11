@@ -14,6 +14,9 @@ import {
   LinearProgress,
   Button,
   TextField,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import type { NextPage } from "next";
 import { Layout } from "../components/layouts";
@@ -23,8 +26,10 @@ import { CSVLink } from "react-csv";
 import homeStyles from "../styles/Home.module.css";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { BridgeResponse, Value } from '../interfaces/bridge-response.interface';
 import { IInputValue } from '../interfaces/input-interface';
+import { typography } from "@mui/system";
 
 const Home: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -163,17 +168,81 @@ const Home: NextPage = () => {
               </Box>
             </CardContent>
           </Card>
-          <Box>
-            <Typography
+          <Box sx={{marginTop: 3}}>
+           {/*  <Typography
               mt={2}
               sx={{ fontSize: 12 }}
               color='text.secondary'
               gutterBottom
             >
               We are searching Miami RE with authentication for properties with
-              Active status and filtering by the PublicRemarks and
+              Active status and filtering by the PublicRemarks, SyndicationRemarks and
               PrivateRemarks fields
-            </Typography>
+            </Typography> */}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography color='text.secondary'>We are searching Miami RE with authentication for properties with
+              Active status and filtering by the PublicRemarks, SyndicationRemarks and
+              PrivateRemarks fields</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+              <TableContainer
+              component={Paper}
+              sx={{ maxHeight: 500 }}
+              elevation={0}
+            >
+              <Table
+                stickyHeader
+                sx={{ minWidth: 750 }}
+                size='small'
+                aria-label='a dense table'
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>MLS</TableCell>
+                    <TableCell>API</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}>
+                    <TableCell>Broker Remarks</TableCell>
+                    <TableCell>Private Remarks</TableCell>
+                  </TableRow>
+                  <TableRow sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}>
+                    <TableCell>Intrnt Remarks</TableCell>
+                    <TableCell>Syndication Remarks</TableCell>
+                  </TableRow>
+                  <TableRow sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}>
+                    <TableCell>Remarks</TableCell>
+                    <TableCell>Public Remarks</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+                {/* <Typography color='text.secondary'>
+                  MLS             API <br />
+                Broker Remarks = Private Remarks <br />
+                Intrnt Remarks = Syndication Remarks  <br />
+                Remarks = Public Remarks
+                </Typography> */}
+              </AccordionDetails>
+            </Accordion>
           </Box>
         </div>
         {renderExportButton()}
