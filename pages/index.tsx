@@ -33,7 +33,7 @@ const Home: NextPage = () => {
   const [total, setTotal] = useState(0);
   const [properties, setProperties] = useState<Value[]>([]);
   const [inputList, setInputList] = useState<IInputValue[]>([{ inputValue: "" }]);
-  const observer: MutableRefObject<undefined | null> = useRef();
+  const observer: MutableRefObject<undefined | any> = useRef();
 
   const lastPropertyRef = useCallback(
     (node) => {
@@ -57,7 +57,7 @@ const Home: NextPage = () => {
     { label: "List Agent Office Phone", key: "ListAgentOfficePhone" },
   ]);
 
-  const handleInputChange = (e, index: number) => {
+  const handleInputChange = (e: any, index: number) => {
     const list = [...inputList];
     list[index].inputValue = e.target.value;
     if (inputList.length - 1 === index) {

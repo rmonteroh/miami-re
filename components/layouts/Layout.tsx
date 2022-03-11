@@ -3,10 +3,11 @@ import Head from "next/head"
 import { NavBar } from "../ui"
 
 interface Props {
-  title?: string
+  title?: string,
+  children: JSX.Element,
 }
 
-export const Layout = ({title = 'Miami RE', children}) => {
+export const Layout = ({title = 'Miami RE', children}: Props) => {
   return (
     <Box sx={{ flexFlow: 1}}>
       <Head>
