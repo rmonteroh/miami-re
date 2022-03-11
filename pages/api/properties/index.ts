@@ -29,11 +29,11 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
     if (searchValue.inputValue) {
       if (!filterList.length) {
         filterList = filterList.concat(
-          `contains(tolower(PublicRemarks),'${searchValue.inputValue.toLowerCase()}') or contains(tolower(PrivateRemarks),'${searchValue.inputValue.toLowerCase()}')`
+          `contains(tolower(PublicRemarks),'${searchValue.inputValue.toLowerCase()}') or contains(tolower(PrivateRemarks),'${searchValue.inputValue.toLowerCase()}') or contains(tolower(SyndicationRemarks),'${searchValue.inputValue.toLowerCase()}')`
         );
       } else {
         filterList = filterList.concat(
-          ` or contains(tolower(PublicRemarks),'${searchValue.inputValue.toLowerCase()}') or contains(tolower(PrivateRemarks),'${searchValue.inputValue.toLowerCase()}')`
+          ` or contains(tolower(PublicRemarks),'${searchValue.inputValue.toLowerCase()}') or contains(tolower(PrivateRemarks),'${searchValue.inputValue.toLowerCase()}') or contains(tolower(SyndicationRemarks),'${searchValue.inputValue.toLowerCase()}')`
         );
       }
     }

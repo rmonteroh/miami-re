@@ -187,7 +187,7 @@ const Home: NextPage = () => {
             >
               <Table
                 stickyHeader
-                sx={{ minWidth: 650 }}
+                sx={{ minWidth: 750 }}
                 size='small'
                 aria-label='a dense table'
               >
@@ -195,6 +195,7 @@ const Home: NextPage = () => {
                   <TableRow>
                     <TableCell>Building Name</TableCell>
                     <TableCell>Listing Id</TableCell>
+                    <TableCell>Address</TableCell>
                     <TableCell>Agent Name</TableCell>
                     <TableCell>List Agent Email</TableCell>
                     <TableCell>List Agent Direct Phone</TableCell>
@@ -220,6 +221,7 @@ const Home: NextPage = () => {
                                 {property.BuildingName}
                               </TableCell>
                               <TableCell>{property.ListingId}</TableCell>
+                              <TableCell>{property.UnparsedAddress}</TableCell>
                               <TableCell>
                                 <span>{property.ListAgentFullName}</span>
                               </TableCell>
@@ -227,10 +229,10 @@ const Home: NextPage = () => {
                                 {property.ListAgentEmail}
                               </TableCell>
                               <TableCell>
-                                <span>{property.ListAgentDirectPhone}</span>
+                                <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentDirectPhone}</span>
                               </TableCell>
                               <TableCell>
-                                <span>{property.ListAgentOfficePhone}</span>
+                                <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentOfficePhone}</span>
                               </TableCell>
                             </TableRow>
                           );
@@ -248,6 +250,7 @@ const Home: NextPage = () => {
                                 {property.BuildingName}
                               </TableCell>
                               <TableCell>{property.ListingId}</TableCell>
+                              <TableCell>{property.UnparsedAddress}</TableCell>
                               <TableCell>
                                 <span>{property.ListAgentFullName}</span>
                               </TableCell>
@@ -255,10 +258,10 @@ const Home: NextPage = () => {
                                 {property.ListAgentEmail}
                               </TableCell>
                               <TableCell>
-                                <span>{property.ListAgentDirectPhone}</span>
+                                <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentDirectPhone}</span>
                               </TableCell>
                               <TableCell>
-                                <span>{property.ListAgentOfficePhone}</span>
+                                <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentOfficePhone}</span>
                               </TableCell>
                             </TableRow>
                           );
