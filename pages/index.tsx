@@ -30,8 +30,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { BridgeResponse, Value } from '../interfaces/bridge-response.interface';
 import { IInputValue } from '../interfaces/input-interface';
 import { typography } from "@mui/system";
+import Popup from "../components/ui/Popup";
+import { formatMoney } from "../Utils";
 
 const Home: NextPage = () => {
+  const [open, setIsOpen] = useState(false);
+  const [propertySelected, setPropertySelected] = useState<Value | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
@@ -127,6 +131,11 @@ const Home: NextPage = () => {
     searchProperty();
   };
 
+  const selectProperty = async (property: Value) => {
+    await setPropertySelected(property)
+    await setIsOpen(true);
+  }
+
   return (
     <Layout>
       <div>
@@ -169,16 +178,6 @@ const Home: NextPage = () => {
             </CardContent>
           </Card>
           <Box sx={{marginTop: 3}}>
-           {/*  <Typography
-              mt={2}
-              sx={{ fontSize: 12 }}
-              color='text.secondary'
-              gutterBottom
-            >
-              We are searching Miami RE with authentication for properties with
-              Active status and filtering by the PublicRemarks, SyndicationRemarks and
-              PrivateRemarks fields
-            </Typography> */}
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -235,12 +234,6 @@ const Home: NextPage = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-                {/* <Typography color='text.secondary'>
-                  MLS             API <br />
-                Broker Remarks = Private Remarks <br />
-                Intrnt Remarks = Syndication Remarks  <br />
-                Remarks = Public Remarks
-                </Typography> */}
               </AccordionDetails>
             </Accordion>
           </Box>
@@ -262,13 +255,15 @@ const Home: NextPage = () => {
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell>Building Name</TableCell>
-                    <TableCell>Listing Id</TableCell>
+                    <TableCell>DOM</TableCell>
                     <TableCell>Address</TableCell>
+                    <TableCell>List Price</TableCell>
                     <TableCell>Agent Name</TableCell>
+                    <TableCell>Agent Direct Phone</TableCell>
+                    <TableCell>Agent Office Phone</TableCell>
                     <TableCell>List Agent Email</TableCell>
-                    <TableCell>List Agent Direct Phone</TableCell>
-                    <TableCell>List Agent Office Phone</TableCell>
+                    <TableCell>Listing Id</TableCell>
+                    <TableCell>Building Name</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -278,6 +273,8 @@ const Home: NextPage = () => {
                         if (properties.length === index + 1) {
                           return (
                             <TableRow
+                              style={{cursor: 'pointer'}}
+                              onClick={() => selectProperty(property)}
                               ref={lastPropertyRef}
                               key={Math.random()}
                               sx={{
@@ -286,16 +283,11 @@ const Home: NextPage = () => {
                                 },
                               }}
                             >
-                              <TableCell component='th' scope='row'>
-                                {property.BuildingName}
-                              </TableCell>
-                              <TableCell>{property.ListingId}</TableCell>
+                              <TableCell>{property.DaysOnMarket}</TableCell>
                               <TableCell>{property.UnparsedAddress}</TableCell>
+                              <TableCell>{formatMoney.format(property.ListPrice)}</TableCell>
                               <TableCell>
                                 <span>{property.ListAgentFullName}</span>
-                              </TableCell>
-                              <TableCell>
-                                {property.ListAgentEmail}
                               </TableCell>
                               <TableCell>
                                 <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentDirectPhone}</span>
@@ -303,11 +295,20 @@ const Home: NextPage = () => {
                               <TableCell>
                                 <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentOfficePhone}</span>
                               </TableCell>
+                              <TableCell>
+                                {property.ListAgentEmail}
+                              </TableCell>
+                              <TableCell>{property.ListingId}</TableCell>
+                              <TableCell component='th' scope='row'>
+                                {property.BuildingName}
+                              </TableCell>
                             </TableRow>
                           );
                         } else {
                           return (
                             <TableRow
+                              style={{cursor: 'pointer'}}
+                              onClick={() => selectProperty(property)}
                               key={Math.random()}
                               sx={{
                                 "&:last-child td, &:last-child th": {
@@ -315,22 +316,24 @@ const Home: NextPage = () => {
                                 },
                               }}
                             >
-                              <TableCell component='th' scope='row'>
-                                {property.BuildingName}
-                              </TableCell>
-                              <TableCell>{property.ListingId}</TableCell>
+                             <TableCell>{property.DaysOnMarket}</TableCell>
                               <TableCell>{property.UnparsedAddress}</TableCell>
+                              <TableCell>{formatMoney.format(property.ListPrice)}</TableCell>
                               <TableCell>
                                 <span>{property.ListAgentFullName}</span>
-                              </TableCell>
-                              <TableCell>
-                                {property.ListAgentEmail}
                               </TableCell>
                               <TableCell>
                                 <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentDirectPhone}</span>
                               </TableCell>
                               <TableCell>
                                 <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentOfficePhone}</span>
+                              </TableCell>
+                              <TableCell>
+                                {property.ListAgentEmail}
+                              </TableCell>
+                              <TableCell>{property.ListingId}</TableCell>
+                              <TableCell component='th' scope='row'>
+                                {property.BuildingName}
                               </TableCell>
                             </TableRow>
                           );
@@ -361,6 +364,7 @@ const Home: NextPage = () => {
             </span>
           )}
         </Box>
+        <Popup open={open} handleClose={() => setIsOpen(false)} property={propertySelected} />
       </div>
     </Layout>
   );

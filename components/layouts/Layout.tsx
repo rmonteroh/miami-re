@@ -16,7 +16,7 @@ export const Layout = ({title = 'Miami RE', children}: Props) => {
       <NavBar />
       {/* Sidebar */}
       <Box>
-        <Container>
+        <Container maxWidth="xl">
           {children}
         </Container>
       </Box>
