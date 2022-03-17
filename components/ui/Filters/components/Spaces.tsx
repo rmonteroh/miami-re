@@ -17,9 +17,16 @@ type Props = {
   bathrooms: string;
   changeBathrooms: Function;
   changeBedrooms: Function;
-}
+};
 
-function Spaces({ bedrooms, bathrooms, changeBathrooms, changeBedrooms }: Props) {
+function Spaces({
+  bedrooms,
+  bathrooms,
+  changeBathrooms,
+  changeBedrooms,
+}: Props) {
+  const bathList = ["any", "1+", "1.5+", "2+", "3+", "4+"];
+  const bedList = ["any", "1+", "2+", "3+", "4+", "5+"];
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -74,24 +81,11 @@ function Spaces({ bedrooms, bathrooms, changeBathrooms, changeBedrooms }: Props)
               onChange={handleBedrooms}
               aria-label='device'
             >
-              <ToggleButton value='any' aria-label='Any'>
-                <Typography>Any</Typography>
-              </ToggleButton>
-              <ToggleButton value='+1' aria-label='+1'>
-                <Typography>+1</Typography>
-              </ToggleButton>
-              <ToggleButton value='+2' aria-label='+2'>
-                <Typography>+2</Typography>
-              </ToggleButton>
-              <ToggleButton value='+3' aria-label='+3'>
-                <Typography>+3</Typography>
-              </ToggleButton>
-              <ToggleButton value='+4' aria-label='+4'>
-                <Typography>+4</Typography>
-              </ToggleButton>
-              <ToggleButton value='+5' aria-label='+5'>
-                <Typography>+5</Typography>
-              </ToggleButton>
+              {bedList.map((bed: string) => (
+                <ToggleButton key={Math.random()} value={bed} aria-label={bed}>
+                  <Typography>{bed}</Typography>
+                </ToggleButton>
+              ))}
             </ToggleButtonGroup>
           </MenuItem>
           <Divider />
@@ -105,24 +99,15 @@ function Spaces({ bedrooms, bathrooms, changeBathrooms, changeBedrooms }: Props)
               onChange={handleBathrooms}
               aria-label='device'
             >
-              <ToggleButton value='any' aria-label='Any'>
-                <Typography>Any</Typography>
-              </ToggleButton>
-              <ToggleButton value='+1' aria-label='+1'>
-                <Typography>+1</Typography>
-              </ToggleButton>
-              <ToggleButton value='+1.5' aria-label='+1.5'>
-                <Typography>+1.5</Typography>
-              </ToggleButton>
-              <ToggleButton value='+2' aria-label='+2'>
-                <Typography>+2</Typography>
-              </ToggleButton>
-              <ToggleButton value='+3' aria-label='+3'>
-                <Typography>+3</Typography>
-              </ToggleButton>
-              <ToggleButton value='+4' aria-label='+4'>
-                <Typography>+4</Typography>
-              </ToggleButton>
+              {bathList.map((item: string) => (
+                <ToggleButton
+                  key={Math.random()}
+                  value={item}
+                  aria-label={item}
+                >
+                  <Typography>{item}</Typography>
+                </ToggleButton>
+              ))}
             </ToggleButtonGroup>
           </MenuItem>
         </MenuList>
