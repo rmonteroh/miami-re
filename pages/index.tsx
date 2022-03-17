@@ -32,6 +32,7 @@ import { IInputValue } from '../interfaces/input-interface';
 import { typography } from "@mui/system";
 import Popup from "../components/ui/Popup";
 import { formatMoney } from "../Utils";
+import Filters from "../components/ui/Filters/Filters";
 
 const Home: NextPage = () => {
   const [open, setIsOpen] = useState(false);
@@ -139,6 +140,7 @@ const Home: NextPage = () => {
   return (
     <Layout>
       <div>
+        <Filters />
         <div style={{ padding: "40px 0" }}>
           <Card>
             <CardContent
