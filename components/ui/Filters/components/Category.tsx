@@ -1,13 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Stack from '@mui/material/Stack';
 import { Button, Menu, MenuItem, MenuList, ListItemText, Typography, Radio } from '@mui/material';
+import { FilterContext } from '../../../../context/filter/FilterContext';
 
-type Props = {
-  category: string;
-  setCategory: Function;
-}
-
-function Category({category, setCategory}: Props) {
+function Category() {
+  const { filterState: { category }, setCategory } = useContext(FilterContext);
   const availableCategories = ['rent', 'sale'];
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);

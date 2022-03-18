@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Stack from "@mui/material/Stack";
 import {
   Button,
@@ -10,17 +10,11 @@ import {
   TextField,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { Value } from '../../../../interfaces/bridge-response.interface';
-import { formatMoney } from "../../../../Utils";
+import { FilterContext } from '../../../../context/filter/FilterContext';
 
-type Props = {
-  minPrice: number;
-  maxPrice: number;
-  setMinPrice: Function;
-  setMaxPrice: Function;
-};
 
-function Price({ minPrice, maxPrice, setMinPrice, setMaxPrice }: Props) {
+function Price() {
+  const {filterState: {minPrice, maxPrice} , setMinPrice, setMaxPrice} = useContext(FilterContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -31,14 +25,10 @@ function Price({ minPrice, maxPrice, setMinPrice, setMaxPrice }: Props) {
   };
 
   const handleMinPriceChange = (minValue: string) => {
-    console.log('minValue', minValue);
-    
     setMinPrice(Number(minValue));
   };
 
   const handleMaxPriceChange = (maxValue: string) => {
-    console.log('minValue', maxValue);
-    
     setMaxPrice(Number(maxValue));
   };
 
@@ -64,14 +54,6 @@ function Price({ minPrice, maxPrice, setMinPrice, setMaxPrice }: Props) {
           </MenuItem>
           <MenuItem disableRipple disableTouchRipple>
             <Box sx={{ padding: "10px 20px"}}>
-              {/* <Slider
-                min={0}
-                max={10000}
-                getAriaLabel={() => "Temperature range"}
-                value={priceRange}
-                onChange={handleChange}
-                valueLabelDisplay='auto'
-              /> */}
               <TextField type='number' value={minPrice} onChange={(e) => handleMinPriceChange(e.target.value)} size="small" id="outlined-basic" label="Min" variant="outlined" />
               <span style={{height: '100%'}}> - </span>
               <TextField type='number' value={maxPrice} onChange={(e) => handleMaxPriceChange(e.target.value)} size="small" id="outlined-basic" label="Max" variant="outlined" />

@@ -1,13 +1,9 @@
 import { Button, Checkbox, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, Stack, Typography } from '@mui/material';
-import React from 'react'
-import { type } from 'os';
+import React, { useContext } from 'react'
+import { FilterContext } from '../../../../context/filter/FilterContext';
 
-type Props = {
-  homeTypes: string[];
-  setHomeTypes: Function;
-}
-
-function Type({homeTypes, setHomeTypes}: Props) {
+function Type() {
+  const {filterState: {homeTypes}, setHomeTypes} = useContext(FilterContext)
   const typesActive = [
     'Houses',
     'Townhomes',

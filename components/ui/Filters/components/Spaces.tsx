@@ -10,21 +10,11 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
+import { FilterContext } from '../../../../context/filter/FilterContext';
 
-type Props = {
-  bedrooms: string;
-  bathrooms: string;
-  changeBathrooms: Function;
-  changeBedrooms: Function;
-};
-
-function Spaces({
-  bedrooms,
-  bathrooms,
-  changeBathrooms,
-  changeBedrooms,
-}: Props) {
+function Spaces() {
+  const {filterState: {bathrooms, bedrooms}, setBathrooms, setBedrooms} = useContext(FilterContext)
   const bathList = ["any", "1+", "1.5+", "2+", "3+", "4+"];
   const bedList = ["any", "1+", "2+", "3+", "4+", "5+"];
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -41,7 +31,7 @@ function Spaces({
     bedrooms: string
   ) => {
     if (bedrooms !== null) {
-      changeBedrooms(bedrooms);
+      setBedrooms(bedrooms);
     }
   };
 
@@ -50,7 +40,7 @@ function Spaces({
     bathrooms: string
   ) => {
     if (bathrooms !== null) {
-      changeBathrooms(bathrooms);
+      setBathrooms(bathrooms);
     }
   };
 

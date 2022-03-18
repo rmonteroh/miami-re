@@ -33,6 +33,7 @@ import { typography } from "@mui/system";
 import Popup from "../components/ui/Popup";
 import { formatMoney } from "../Utils";
 import Filters from "../components/ui/Filters/Filters";
+import FilterProvider from "../context/filter/FilterProvider";
 
 const Home: NextPage = () => {
   const [open, setIsOpen] = useState(false);
@@ -139,6 +140,7 @@ const Home: NextPage = () => {
 
   return (
     <Layout>
+      <FilterProvider>
       <div>
         <Filters />
         <div style={{ padding: "40px 0" }}>
@@ -368,6 +370,7 @@ const Home: NextPage = () => {
         </Box>
         <Popup open={open} handleClose={() => setIsOpen(false)} property={propertySelected} />
       </div>
+      </FilterProvider>
     </Layout>
   );
 };
