@@ -10,24 +10,19 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import Slide from "@mui/material/Slide";
-import { type } from "os";
-import { Value, Media } from "../../interfaces/bridge-response.interface";
+
+import { PropertyData, Media } from "../../interfaces/bridge-response.interface";
 import Carousel from "react-material-ui-carousel";
 import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
 import ShowerOutlinedIcon from "@mui/icons-material/ShowerOutlined";
 import SquareFootOutlinedIcon from "@mui/icons-material/SquareFootOutlined";
 import AspectRatioOutlinedIcon from "@mui/icons-material/AspectRatioOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-/* 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction='up' ref={ref} {...props} />;
-}); */
 
 type Props = {
   open: boolean;
   handleClose: Function;
-  property: Value | null;
+  property: PropertyData | null;
 };
 
 const Popup = ({ open, handleClose, property }: Props) => {
