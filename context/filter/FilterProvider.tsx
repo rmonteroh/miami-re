@@ -42,6 +42,10 @@ const FilterProvider = ({ children }: Props) => {
     dispatch({type: 'setHomeType', payload: homeTypes})
   }
 
+  const setFilters = () => {
+    dispatch({type: 'resetFilters'})
+  }
+
   return (
     <FilterContext.Provider value={{
       filterState,
@@ -51,6 +55,7 @@ const FilterProvider = ({ children }: Props) => {
       setBathrooms,
       setBedrooms,
       setHomeTypes,
+      setFilters,
     }}>
       { children }
     </FilterContext.Provider>

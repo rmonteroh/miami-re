@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import Stack from "@mui/material/Stack";
 import {
+  Badge,
   Button,
   ListItemText,
   Menu,
@@ -25,19 +26,37 @@ function Price() {
   };
 
   const handleMinPriceChange = (minValue: string) => {
+    if (Number(minValue) < 0) {
+      setMinPrice(0);
+      return;
+    }
+
     setMinPrice(Number(minValue));
+
+    if (!maxPrice || Number(minValue) > maxPrice) {
+      setMaxPrice(Number(minValue));
+    }
   };
 
   const handleMaxPriceChange = (maxValue: string) => {
     setMaxPrice(Number(maxValue));
   };
 
+  const showAmount = (): string => {
+    const minValue = minPrice > 999 ? `${minPrice / 1000}m` : `${minPrice}k`
+    const maxValue = maxPrice > 999 ? `${maxPrice / 1000}m` : `${maxPrice}k`
+
+    return `${minValue} - ${maxValue}`
+  }
+
   return (
     <>
       <Stack spacing={2} direction='row'>
+      <Badge invisible={!minPrice && !maxPrice} badgeContent={showAmount()} color="secondary">
         <Button size='medium' variant='text' onClick={handleClick}>
-          Price
+          List Price
         </Button>
+      </Badge>
       </Stack>
       <Menu
         id='basic-menu'
@@ -58,6 +77,9 @@ function Price() {
               <span style={{height: '100%'}}> - </span>
               <TextField type='number' value={maxPrice} onChange={(e) => handleMaxPriceChange(e.target.value)} size="small" id="outlined-basic" label="Max" variant="outlined" />
             </Box>
+          </MenuItem>
+          <MenuItem disableRipple disableTouchRipple>
+            <small>Note: All price ​​will be multiplied by 1000</small>
           </MenuItem>
         </MenuList>
       </Menu>

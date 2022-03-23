@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-import { Value, Media } from "../../interfaces/bridge-response.interface";
+import { PropertyData, Media } from "../../interfaces/bridge-response.interface";
 import Carousel from "react-material-ui-carousel";
 import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
 import ShowerOutlinedIcon from "@mui/icons-material/ShowerOutlined";
@@ -22,7 +22,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 type Props = {
   open: boolean;
   handleClose: Function;
-  property: Value | null;
+  property: PropertyData | null;
 };
 
 const Popup = ({ open, handleClose, property }: Props) => {

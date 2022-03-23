@@ -1,17 +1,14 @@
-import { Button, Checkbox, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, Stack, Typography } from '@mui/material';
+import { Badge, Button, Checkbox, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, Stack, Typography } from '@mui/material';
 import React, { useContext } from 'react'
 import { FilterContext } from '../../../../context/filter/FilterContext';
 
 function Type() {
   const {filterState: {homeTypes}, setHomeTypes} = useContext(FilterContext)
   const typesActive = [
-    'Houses',
-    'Townhomes',
-    'Multi-family',
-    'Condos/Co-ops',
-    'Lost/Land',
-    'Aparments',
-    'Manufactured',
+    'House',
+    'Townhouse',
+    'Condo',
+    'Apartment',
   ]
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -36,7 +33,9 @@ function Type() {
   return (
     <>
       <Stack spacing={2} direction="row">
+        <Badge invisible={!homeTypes.length} badgeContent={`${homeTypes.length}`} color="secondary">
           <Button size="medium" variant="text" onClick={handleClick}>Home type</Button>
+        </Badge>
         </Stack>
         <Menu
           id="basic-menu"

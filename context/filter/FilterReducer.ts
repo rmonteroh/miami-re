@@ -8,6 +8,7 @@ type FilterAction =
   | {type: 'setHomeType', payload: string[]}
   | {type: 'setMinPrice', payload: number}
   | {type: 'setMaxPrice', payload: number}
+  | {type: 'resetFilters'}
  
  const FilterReducer = (state: IFiltersState, action: FilterAction): IFiltersState => {
 
@@ -41,6 +42,15 @@ type FilterAction =
        return {
          ...state,
          maxPrice: action.payload
+       }
+     case 'resetFilters':
+       return {
+          category: 'sale',
+          bedrooms: 'any',
+          bathrooms: 'any',
+          homeTypes: [],
+          minPrice: 0,
+          maxPrice: 0
        }
    
      default:

@@ -21,7 +21,7 @@ function Category() {
   return (
     <>
       <Stack spacing={2} direction="row">
-          <Button size="medium" variant="text" onClick={handleClick}>For Sale</Button>
+          <Button size="medium" variant="text">For Sale</Button>
         </Stack>
         <Menu
           id="basic-menu"

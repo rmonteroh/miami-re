@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Divider,
   ListItemText,
@@ -47,9 +48,11 @@ function Spaces() {
   return (
     <>
       <Stack spacing={2} direction='row'>
-        <Button size='medium' variant='text' onClick={handleClick}>
-          Beds & Bath
-        </Button>
+        <Badge invisible={bedrooms === 'any' && bathrooms === 'any'} badgeContent={`${bedrooms} - ${bathrooms}`} color="secondary">
+          <Button size='medium' variant='text' onClick={handleClick}>
+            Beds & Bath
+          </Button>
+        </Badge>
       </Stack>
       <Menu
         id='basic-menu'

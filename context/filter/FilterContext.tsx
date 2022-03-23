@@ -9,6 +9,7 @@ export type FilterContentProps = {
   setBathrooms: (id: string) => void;
   setBedrooms: (id: string) => void;
   setHomeTypes: (id: string[]) => void;
+  setFilters: () => void;
 }
 
 export const FilterContext = createContext<FilterContentProps>({} as FilterContentProps);
