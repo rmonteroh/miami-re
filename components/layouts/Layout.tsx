@@ -1,6 +1,8 @@
 import { Box, Container } from "@mui/material"
 import Head from "next/head"
+import { ToastContainer } from "react-toastify"
 import { NavBar } from "../ui"
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Props {
   title?: string,
@@ -20,6 +22,7 @@ export const Layout = ({title = 'Miami RE', children}: Props) => {
           {children}
         </Container>
       </Box>
+      <ToastContainer />
     </Box>
   )
 }

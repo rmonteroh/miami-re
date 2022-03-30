@@ -5,4 +5,6 @@ export interface IFiltersState {
   homeTypes: string[];
   minPrice: number;
   maxPrice: number;
+  city: string;
+  postalCode: string;
 }

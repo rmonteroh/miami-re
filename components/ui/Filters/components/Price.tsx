@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { FilterContext } from '../../../../context/filter/FilterContext';
+import { formatCompactNumber } from "../../../../Utils";
 
 
 function Price() {
@@ -43,8 +44,8 @@ function Price() {
   };
 
   const showAmount = (): string => {
-    const minValue = minPrice > 999 ? `${minPrice / 1000}m` : `${minPrice}k`
-    const maxValue = maxPrice > 999 ? `${maxPrice / 1000}m` : `${maxPrice}k`
+    const minValue = formatCompactNumber.format(minPrice);
+    const maxValue = formatCompactNumber.format(maxPrice);
 
     return `${minValue} - ${maxValue}`
   }
@@ -77,9 +78,6 @@ function Price() {
               <span style={{height: '100%'}}> - </span>
               <TextField type='number' value={maxPrice} onChange={(e) => handleMaxPriceChange(e.target.value)} size="small" id="outlined-basic" label="Max" variant="outlined" />
             </Box>
-          </MenuItem>
-          <MenuItem disableRipple disableTouchRipple>
-            <small>Note: All price ​​will be multiplied by 1000</small>
           </MenuItem>
         </MenuList>
       </Menu>

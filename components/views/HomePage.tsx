@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import {
   Card,
   CardContent,
@@ -29,18 +29,18 @@ import { propertiesApi } from '../../apis';
 import Popup from '../ui/Popup';
 import { formatMoney } from '../../Utils';
 import Filters from '../ui/Filters/Filters';
+import { toast } from 'react-toastify';
 
 
 const HomePage = () => {
   const {filterState} = useContext(FilterContext)
-  console.log('filterState', filterState);
-  
   const [open, setIsOpen] = useState(false);
   const [propertySelected, setPropertySelected] = useState<PropertyData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
+  const [timer, setTimer] = useState<any>(null);
   const [properties, setProperties] = useState<PropertyData[]>([]);
   const [inputList, setInputList] = useState<IInputValue[]>([{ inputValue: "" }]);
   const observer: MutableRefObject<undefined | any> = useRef();
@@ -51,7 +51,7 @@ const HomePage = () => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          searchProperty();
+          searchProperty(true);
         }
       });
       if (node) observer?.current?.observe(node);
@@ -67,16 +67,29 @@ const HomePage = () => {
     { label: "List Agent Office Phone", key: "ListAgentOfficePhone" },
   ]);
 
-  const handleInputChange = (e: any, index: number) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
+    
+    
+    if (timer) {
+      clearTimeout(timer);
+    }
+
     const list = [...inputList];
     list[index].inputValue = e.target.value;
     if (inputList.length - 1 === index) {
       list.push({ inputValue: "" });
     }
-    setInputList(list);
+
+    const newTimer = setTimeout(() => {
+      setInputList(list);
+    }, 500)
+
+    setTimer(newTimer);
+    
+    
   };
 
-  const searchProperty = async () => {
+  const searchProperty = async (loadMore: boolean = false) => {
     setIsLoading(true);
     const { data, status } = await propertiesApi.post("properties", {
       page: page,
@@ -85,12 +98,14 @@ const HomePage = () => {
     });
 
     const response: BridgeResponse = data;
-    console.log('response ->', data, 'status ->', status);
-    
 
     if (status === 200 && response.value) {
       const { value } = response;
-      setProperties([...properties, ...value]);
+      if (loadMore) {
+        setProperties([...properties, ...value]);
+      } else {
+        setProperties([...value]);
+      }
       setPage(page + 1);
       if (response["@odata.count"]) {
         setTotal(response["@odata.count"]);
@@ -103,8 +118,7 @@ const HomePage = () => {
       }
     } else {
       console.log(response?.error?.message);
-      
-      alert('error')
+      toast.error('Error trying to load properties');
     }
     setIsLoading(false);
   };
@@ -139,6 +153,7 @@ const HomePage = () => {
   };
 
   const makeNewSearch = async () => {
+    await setProperties([]);
     await resetStore();
     searchProperty();
   };
@@ -370,7 +385,7 @@ const HomePage = () => {
         >
           {properties.length > 0 && (
             <span>
-              {properties.length} of {total}
+              {properties.length} of {total < properties.length ? properties.length : total}
             </span>
           )}
         </Box>

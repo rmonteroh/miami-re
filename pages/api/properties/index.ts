@@ -26,7 +26,6 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
   let url = "";
   const filterList: string = createSearchQuery(inputList);
   const filterQuery: string = createFilterQuery(filters);
-  console.log('filterQuery', filterQuery);
   
 
   if (filterList.length) {
@@ -40,8 +39,6 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
       process.env.MLS_SERVER_TOKEN
     }&$top=200&$filter=StandardStatus eq 'Active' and ${filterQuery}&$skip=${200 * page}`;
   }
-  console.log('url -> ', url);
-  
 
   const properties: BridgeResponse = await fetch(url).then((response) => response.json());
 
@@ -71,11 +68,13 @@ const createSearchQuery = (inputList: IInputValue[]): string => {
 const createFilterQuery = (filters: IFiltersState): string => {
   let filterQuery = '';
   let homeQuery = '';
-  const { bathrooms, bedrooms, minPrice, maxPrice, homeTypes, category } = filters;
-  const minPriceQuery: string = `ListPrice ge ${minPrice * 1000 || 0}`;
-  const maxPriceQuery: string = `ListPrice le ${maxPrice * 1000}`;
+  const { bathrooms, bedrooms, minPrice, maxPrice, homeTypes, category, city, postalCode } = filters;
+  const minPriceQuery: string = `ListPrice ge ${minPrice || 0}`;
+  const maxPriceQuery: string = `ListPrice le ${maxPrice }`;
   const bathroomsQuery: string = `${bathrooms === 'any' ? '' : 'BathroomsTotalDecimal ge '+ parseFloat(bathrooms)}`;
   const bedroomsQuery: string = `${bedrooms === 'any' ? '' : 'BedroomsTotal ge '+ parseFloat(bedrooms)}`;
+  const cityQuery: string = `${city === '' ? '' : `tolower(City) eq '${city.toLowerCase()}'`}`;
+  const codeQuery: string = `${postalCode === '' ? '' : `tolower(PostalCode) eq '${postalCode}'`}`;
 
   filterQuery = filterQuery.concat(minPriceQuery);
 
@@ -103,6 +102,14 @@ const createFilterQuery = (filters: IFiltersState): string => {
 
   if (homeQuery.length) {
     filterQuery = filterQuery.concat(` and ${homeQuery}`);
+  }
+
+  if (city.length) {
+    filterQuery = filterQuery.concat(` and ${cityQuery}`);
+  }
+
+  if (postalCode.length) {
+    filterQuery = filterQuery.concat(` and ${codeQuery}`);
   }
 
   return filterQuery;
