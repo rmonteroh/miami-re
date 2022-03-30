@@ -9,6 +9,8 @@ export type FilterContentProps = {
   setBathrooms: (id: string) => void;
   setBedrooms: (id: string) => void;
   setHomeTypes: (id: string[]) => void;
+  setCityTypes: (id: string) => void;
+  setPostalCode: (id: string) => void;
   setFilters: () => void;
 }
 

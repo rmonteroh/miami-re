@@ -8,6 +8,8 @@ type FilterAction =
   | {type: 'setHomeType', payload: string[]}
   | {type: 'setMinPrice', payload: number}
   | {type: 'setMaxPrice', payload: number}
+  | {type: 'setCityType', payload: string}
+  | {type: 'setPostalCode', payload: string}
   | {type: 'resetFilters'}
  
  const FilterReducer = (state: IFiltersState, action: FilterAction): IFiltersState => {
@@ -43,6 +45,16 @@ type FilterAction =
          ...state,
          maxPrice: action.payload
        }
+     case 'setPostalCode':
+       return {
+         ...state,
+         postalCode: action.payload
+       }
+     case 'setCityType':
+       return {
+         ...state,
+         city: action.payload
+       }
      case 'resetFilters':
        return {
           category: 'sale',
@@ -50,7 +62,9 @@ type FilterAction =
           bathrooms: 'any',
           homeTypes: [],
           minPrice: 0,
-          maxPrice: 0
+          maxPrice: 0,
+          city: '',
+          postalCode: ''
        }
    
      default:

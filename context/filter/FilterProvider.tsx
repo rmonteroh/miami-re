@@ -9,7 +9,9 @@ const INITIAL_STATE: IFiltersState = {
   bathrooms: 'any',
   homeTypes: [],
   minPrice: 0,
-  maxPrice: 0
+  maxPrice: 0,
+  city: '',
+  postalCode: '',
 }
 
 type Props = {
@@ -42,6 +44,14 @@ const FilterProvider = ({ children }: Props) => {
     dispatch({type: 'setHomeType', payload: homeTypes})
   }
 
+  const setCityTypes = (city: string) => {
+    dispatch({type: 'setCityType', payload: city})
+  }
+
+  const setPostalCode = (code: string) => {
+    dispatch({type: 'setPostalCode', payload: code})
+  }
+
   const setFilters = () => {
     dispatch({type: 'resetFilters'})
   }
@@ -56,6 +66,8 @@ const FilterProvider = ({ children }: Props) => {
       setBedrooms,
       setHomeTypes,
       setFilters,
+      setCityTypes,
+      setPostalCode,
     }}>
       { children }
     </FilterContext.Provider>
