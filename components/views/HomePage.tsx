@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import {
   Card,
   CardContent,
@@ -13,7 +13,6 @@ import {
   Paper,
   LinearProgress,
   Button,
-  TextField,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -49,8 +48,6 @@ const HomePage = () => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          console.log('intersectiong');
-          
           searchProperty(true);
         }
       });
@@ -128,9 +125,7 @@ const HomePage = () => {
   };
 
   const resetStore = async () => {
-    // await setProperties([]);
     await setPage(0);
-    // await setTotal(0);
   };
 
   const selectProperty = async (property: PropertyData) => {
@@ -139,8 +134,6 @@ const HomePage = () => {
   }
 
   useEffect(() => {
-    console.log('cambio filtros');
-    
     resetStore();
   }, [filterState])
   
