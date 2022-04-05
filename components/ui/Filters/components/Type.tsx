@@ -34,7 +34,7 @@ function Type() {
     <>
       <Stack spacing={2} direction="row">
         <Badge invisible={!homeTypes.length} badgeContent={`${homeTypes.length}`} color="secondary">
-          <Button size="medium" variant="text" onClick={() => handleClick(e)}>Home type</Button>
+          <Button size="medium" variant="text" onClick={(e) => handleClick(e)}>Home type</Button>
         </Badge>
         </Stack>
         <Menu
