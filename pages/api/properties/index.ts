@@ -41,8 +41,15 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
       process.env.MLS_SERVER_TOKEN
     }&$top=200&$filter=StandardStatus eq 'Active' and ${filterQuery}&$skip=${200 * page}`;
   }
+ // console.log('url', url);
  
-  const properties: BridgeResponse = await fetch(url).then((response) => response.json());
+  const properties: BridgeResponse = await fetch(url)
+    .then((response) => response.json())
+    .catch((err) => {
+      console.error(err);
+
+      return res.status(500)}
+    );
 
   res.status(200).json({ ...properties });
 };
