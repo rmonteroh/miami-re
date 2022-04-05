@@ -31,7 +31,7 @@ function Filters({search}: Props) {
         </div>
       <Divider />
       <div style={{padding: "10px 0"}}>
-        <Search search={search} />
+        <Search search={() => search()} />
       </div>
       </Stack>
     </Paper>
