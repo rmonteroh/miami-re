@@ -66,13 +66,16 @@ const HomePage = () => {
   ]);
 
   const searchProperty = async (loadMore: boolean = false) => {
+    const actualPage = 0;
     if (!loadMore) {
       await setProperties([]);
       await setTotal(0);
+      await setPage(0);
     }
     await setIsLoading(true);
+    debugger;
     const { data, status } = await propertiesApi.post("properties", {
-      page: page,
+      page: !loadMore ? 0 : page,
       inputList,
       filters: filterState 
     });
@@ -136,13 +139,15 @@ const HomePage = () => {
   }
 
   useEffect(() => {
+    console.log('cambio filtros');
+    
     resetStore();
   }, [filterState])
   
   return (
     <div>
       <Box sx={{marginTop:'15px'}}>
-        <Filters search={searchProperty} />
+        <Filters search={() => searchProperty()} />
       </Box>
         <div style={{ paddingBottom: "40px" }}>
           <Box sx={{marginTop: '20px'}}>
