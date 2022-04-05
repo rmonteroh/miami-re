@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useEffect } from 'react'
 import {
   Card,
   CardContent,
@@ -21,7 +21,6 @@ import {
 import { MutableRefObject, useCallback, useContext, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { FilterContext } from '../../context/filter/FilterContext';
 import { BridgeResponse, IInputValue, PropertyData } from '../../interfaces';
@@ -40,7 +39,6 @@ const HomePage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
-  const [timer, setTimer] = useState<any>(null);
   const [properties, setProperties] = useState<PropertyData[]>([]);
   const [inputList, setInputList] = useState<IInputValue[]>([{ inputValue: "" }]);
   const observer: MutableRefObject<undefined | any> = useRef();
@@ -67,30 +65,12 @@ const HomePage = () => {
     { label: "List Agent Office Phone", key: "ListAgentOfficePhone" },
   ]);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
-    
-    
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    const list = [...inputList];
-    list[index].inputValue = e.target.value;
-    if (inputList.length - 1 === index) {
-      list.push({ inputValue: "" });
-    }
-
-    const newTimer = setTimeout(() => {
-      setInputList(list);
-    }, 500)
-
-    setTimer(newTimer);
-    
-    
-  };
-
   const searchProperty = async (loadMore: boolean = false) => {
-    setIsLoading(true);
+    if (!loadMore) {
+      await setProperties([]);
+      await setTotal(0);
+    }
+    await setIsLoading(true);
     const { data, status } = await propertiesApi.post("properties", {
       page: page,
       inputList,
@@ -101,13 +81,16 @@ const HomePage = () => {
 
     if (status === 200 && response.value) {
       const { value } = response;
+      setPage(page + 1);
       if (loadMore) {
         setProperties([...properties, ...value]);
       } else {
         setProperties([...value]);
       }
-      setPage(page + 1);
       if (response["@odata.count"]) {
+        if (response["@odata.count"] < 200) {
+          setHasMore(false);
+        }
         setTotal(response["@odata.count"]);
       } else {
         setTotal(0);
@@ -141,69 +124,28 @@ const HomePage = () => {
   };
 
   const resetStore = async () => {
-    await setProperties([]);
+    // await setProperties([]);
     await setPage(0);
     await setHasMore(true);
-    await setTotal(0);
-  };
-
-  const clearSearch = () => {
-    resetStore();
-    setInputList([{ inputValue: "" }]);
-  };
-
-  const makeNewSearch = async () => {
-    await setProperties([]);
-    await resetStore();
-    searchProperty();
+    // await setTotal(0);
   };
 
   const selectProperty = async (property: PropertyData) => {
     await setPropertySelected(property)
     await setIsOpen(true);
   }
+
+  useEffect(() => {
+    resetStore();
+  }, [filterState])
+  
   return (
     <div>
-        <Filters />
-        <div style={{ padding: "40px 0" }}>
-          <Card>
-            <CardContent
-              sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: "10px",
-                  flexWrap: "wrap",
-                }}
-              >
-                {inputList.map((x, i) => (
-                  <TextField
-                    size='small'
-                    key={i}
-                    value={x.inputValue}
-                    onChange={(e) => handleInputChange(e, i)}
-                    label='New search criteria'
-                    variant='outlined'
-                  />
-                ))}
-                <Button onClick={makeNewSearch} variant='contained'>
-                  Search
-                </Button>
-                {inputList.length > 1 && (
-                  <Button
-                    onClick={clearSearch}
-                    variant='outlined'
-                    startIcon={<BackspaceOutlinedIcon />}
-                  >
-                    Clear
-                  </Button>
-                )}
-              </Box>
-            </CardContent>
-          </Card>
-          <Box sx={{marginTop: 3}}>
+      <Box sx={{marginTop:'15px'}}>
+        <Filters search={searchProperty} />
+      </Box>
+        <div style={{ paddingBottom: "40px" }}>
+          <Box sx={{marginTop: '20px'}}>
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}

@@ -2,6 +2,8 @@ import React, { useReducer } from 'react'
 import { IFiltersState } from '../../interfaces/filter-interface';
 import { FilterContext } from './FilterContext';
 import FilterReducer from './FilterReducer';
+import { IInputValue } from '../../interfaces/input-interface';
+import { toast } from 'react-toastify';
 
 const INITIAL_STATE: IFiltersState = {
   category: 'sale',
@@ -12,6 +14,7 @@ const INITIAL_STATE: IFiltersState = {
   maxPrice: 0,
   city: '',
   postalCode: '',
+  inputList: [{ inputValue: "" }]
 }
 
 type Props = {
@@ -53,7 +56,12 @@ const FilterProvider = ({ children }: Props) => {
   }
 
   const setFilters = () => {
-    dispatch({type: 'resetFilters'})
+    dispatch({type: 'resetFilters'});
+    toast.info('Filters were removed');
+  }
+
+  const setInputList = (inputList: IInputValue[]) => {
+    dispatch({type: 'setInputList', payload: inputList})
   }
 
   return (
@@ -68,6 +76,7 @@ const FilterProvider = ({ children }: Props) => {
       setFilters,
       setCityTypes,
       setPostalCode,
+      setInputList,
     }}>
       { children }
     </FilterContext.Provider>
