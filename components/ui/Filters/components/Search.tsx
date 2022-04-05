@@ -5,7 +5,11 @@ import { FilterContext } from '../../../../context/filter/FilterContext';
 import { useContext, useState } from 'react';
 import { IInputValue } from '../../../../interfaces/input-interface';
 
-const Search = ({search}) => {
+type Props = {
+  search: Function;
+};
+
+const Search = ({search}: Props) => {
   const [timer, setTimer] = useState<any>(null);
   const {filterState: {inputList} , setInputList} = useContext(FilterContext);
 

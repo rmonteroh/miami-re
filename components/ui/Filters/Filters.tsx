@@ -10,7 +10,11 @@ import { useContext } from 'react';
 import CityAndCode from './components/CityAndCode';
 import Search from "./components/Search";
 
-function Filters({search}) {
+type Props = {
+  search: Function;
+};
+
+function Filters({search}: Props) {
   const {setFilters} = useContext(FilterContext);
   return (
     <Paper sx={{padding: "10px 15px"}}>
