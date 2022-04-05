@@ -130,7 +130,6 @@ const HomePage = () => {
   const resetStore = async () => {
     // await setProperties([]);
     await setPage(0);
-    await setHasMore(true);
     // await setTotal(0);
   };
 
