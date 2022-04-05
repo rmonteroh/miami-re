@@ -72,41 +72,48 @@ const HomePage = () => {
       await setPage(0);
     }
     await setIsLoading(true);
-    const { data, status } = await propertiesApi.post("properties", {
-      page: !loadMore ? 0 : page,
-      inputList,
-      filters: filterState 
-    });
 
-    const response: BridgeResponse = data;
-    console.log('data', data);
-    console.log('status', status);
-    
-
-    if (status === 200 && response.value) {
-      const { value } = response;
-      setPage(page + 1);
-      if (loadMore) {
-        setProperties([...properties, ...value]);
-      } else {
-        setProperties([...value]);
-      }
-      if (response["@odata.count"]) {
-        if (response["@odata.count"] < 200) {
+    try {
+      const { data, status } = await propertiesApi.post("properties", {
+        page: !loadMore ? 0 : page,
+        inputList,
+        filters: filterState 
+      });
+  
+      const response: BridgeResponse = data;
+      console.log('data', data);
+      console.log('status', status);
+      
+  
+      if (status === 200 && response.value) {
+        const { value } = response;
+        setPage(page + 1);
+        if (loadMore) {
+          setProperties([...properties, ...value]);
+        } else {
+          setProperties([...value]);
+        }
+        if (response["@odata.count"]) {
+          if (response["@odata.count"] < 200) {
+            setHasMore(false);
+          }
+          setTotal(response["@odata.count"]);
+        } else {
+          setTotal(0);
+        }
+  
+        if (!value.length) {
           setHasMore(false);
         }
-        setTotal(response["@odata.count"]);
       } else {
-        setTotal(0);
+        console.log(response?.error?.message);
+        toast.error('Error trying to load properties');
       }
-
-      if (!value.length) {
-        setHasMore(false);
-      }
-    } else {
-      console.log(response?.error?.message);
+    } catch (error) {
+      console.error('error', error);
       toast.error('Error trying to load properties');
     }
+   
     setIsLoading(false);
   };
 
