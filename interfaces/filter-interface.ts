@@ -1,3 +1,4 @@
+import { IInputValue } from './input-interface';
 export interface IFiltersState {
   category: string;
   bedrooms: string;
@@ -7,4 +8,5 @@ export interface IFiltersState {
   maxPrice: number;
   city: string;
   postalCode: string;
+  inputList: IInputValue[];
 }

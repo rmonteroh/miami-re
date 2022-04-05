@@ -1,5 +1,6 @@
  import React from 'react'
 import { IFiltersState } from '../../interfaces/filter-interface';
+import { IInputValue } from '../../interfaces/input-interface';
 
 type FilterAction =
   | {type: 'setCategory', payload: string}
@@ -10,6 +11,7 @@ type FilterAction =
   | {type: 'setMaxPrice', payload: number}
   | {type: 'setCityType', payload: string}
   | {type: 'setPostalCode', payload: string}
+  | {type: 'setInputList', payload: IInputValue[]}
   | {type: 'resetFilters'}
  
  const FilterReducer = (state: IFiltersState, action: FilterAction): IFiltersState => {
@@ -55,6 +57,11 @@ type FilterAction =
          ...state,
          city: action.payload
        }
+     case 'setInputList':
+       return {
+         ...state,
+         inputList: action.payload
+       }
      case 'resetFilters':
        return {
           category: 'sale',
@@ -64,7 +71,8 @@ type FilterAction =
           minPrice: 0,
           maxPrice: 0,
           city: '',
-          postalCode: ''
+          postalCode: '',
+          inputList: [{ inputValue: "" }],
        }
    
      default:

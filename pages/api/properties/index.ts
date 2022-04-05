@@ -23,6 +23,8 @@ export default function handler(
 
 const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
   const { inputList, page, filters }: ISearchPostData = req.body;
+  console.log('page', page);
+  
   let url = "";
   const filterList: string = createSearchQuery(inputList);
   const filterQuery: string = createFilterQuery(filters);
@@ -39,7 +41,8 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
       process.env.MLS_SERVER_TOKEN
     }&$top=200&$filter=StandardStatus eq 'Active' and ${filterQuery}&$skip=${200 * page}`;
   }
-
+ // console.log('url', url);
+ 
   const properties: BridgeResponse = await fetch(url).then((response) => response.json());
 
   res.status(200).json({ ...properties });
