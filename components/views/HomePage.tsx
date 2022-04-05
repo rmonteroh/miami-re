@@ -79,6 +79,9 @@ const HomePage = () => {
     });
 
     const response: BridgeResponse = data;
+    console.log('data', data);
+    console.log('status', status);
+    
 
     if (status === 200 && response.value) {
       const { value } = response;
