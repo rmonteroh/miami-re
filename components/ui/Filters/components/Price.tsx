@@ -54,7 +54,7 @@ function Price() {
     <>
       <Stack spacing={2} direction='row'>
       <Badge invisible={!minPrice && !maxPrice} badgeContent={showAmount()} color="secondary">
-        <Button size='medium' variant='text' onClick={handleClick}>
+        <Button size='medium' variant='text' onClick={(e) => handleClick(e)}>
           List Price
         </Button>
       </Badge>
@@ -63,7 +63,7 @@ function Price() {
         id='basic-menu'
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose()}
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}

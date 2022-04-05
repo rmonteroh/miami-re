@@ -49,7 +49,7 @@ function Spaces() {
     <>
       <Stack spacing={2} direction='row'>
         <Badge invisible={bedrooms === 'any' && bathrooms === 'any'} badgeContent={`${bedrooms} - ${bathrooms}`} color="secondary">
-          <Button size='medium' variant='text' onClick={handleClick}>
+          <Button size='medium' variant='text' onClick={(e) => handleClick(e)}>
             Beds & Bath
           </Button>
         </Badge>
@@ -58,7 +58,7 @@ function Spaces() {
         id='basic-menu'
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose()}
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}

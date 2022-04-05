@@ -73,7 +73,6 @@ const HomePage = () => {
       await setPage(0);
     }
     await setIsLoading(true);
-    debugger;
     const { data, status } = await propertiesApi.post("properties", {
       page: !loadMore ? 0 : page,
       inputList,
