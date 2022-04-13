@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -19,6 +19,10 @@ import SquareFootOutlinedIcon from "@mui/icons-material/SquareFootOutlined";
 import AspectRatioOutlinedIcon from "@mui/icons-material/AspectRatioOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 
+import Highlighter from "react-highlight-words";
+import { useContext } from 'react';
+import { FilterContext } from '../../context/filter/FilterContext';
+
 type Props = {
   open: boolean;
   handleClose: Function;
@@ -26,6 +30,17 @@ type Props = {
 };
 
 const Popup = ({ open, handleClose, property }: Props) => {
+  const {filterState: { inputList }} = useContext(FilterContext);
+
+  const fillSearchHighlight = () => {
+    const searchHighlight : string[] = [];
+    inputList.map((search) => {
+      searchHighlight.push(search.inputValue);
+    });
+
+    return searchHighlight;
+  }
+
   const renderImages = () => {
     if (property && property.Media?.length) {
       return (
@@ -34,7 +49,7 @@ const Popup = ({ open, handleClose, property }: Props) => {
             <CardMedia
               key={Math.random()}
               component='img'
-              height='194'
+              height='300'
               image={media.MediaURL}
               alt='Paella dish'
             />
@@ -43,6 +58,7 @@ const Popup = ({ open, handleClose, property }: Props) => {
       )
     }
   }
+  
 
   return (
     <Dialog
@@ -89,6 +105,34 @@ const Popup = ({ open, handleClose, property }: Props) => {
                 <CalendarMonthOutlinedIcon /> Year Built:{" "}
               </span>
               {property?.YearBuilt}
+            </div>
+            <div style={{ display: "flex", alignItems: "start", gap: "15px" }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <strong>Property type:</strong>{" "}
+              </span>
+              {property?.PropertyType}
+            </div>
+            <div style={{ display: "flex", flexDirection: 'column', alignItems: "start", gap: "15px" }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <strong>Public remark:</strong> {" "}
+              </span>
+              <Highlighter
+                  highlightClassName="YourHighlightClass"
+                  searchWords={[...fillSearchHighlight()]}
+                  autoEscape={true}
+                  textToHighlight={property?.PublicRemarks || '-'}
+                />
+            </div>
+            <div style={{ display: "flex", flexDirection: 'column', alignItems: "start", gap: "15px" }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <strong>Private remark:</strong> {" "}
+              </span>
+              <Highlighter
+                  highlightClassName="YourHighlightClass"
+                  searchWords={[...fillSearchHighlight()]}
+                  autoEscape={true}
+                  textToHighlight={property?.PrivateRemarks || '-'}
+                />
             </div>
           </div>
         </DialogContentText>

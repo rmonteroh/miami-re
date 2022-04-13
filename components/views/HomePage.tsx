@@ -76,7 +76,6 @@ const HomePage = () => {
     try {
       const { data, status } = await propertiesApi.post("properties", {
         page: !loadMore ? 0 : page,
-        inputList,
         filters: filterState 
       });
   
@@ -250,7 +249,6 @@ const HomePage = () => {
                           return (
                             <TableRow
                               style={{cursor: 'pointer'}}
-                              onClick={() => selectProperty(property)}
                               ref={lastPropertyRef}
                               key={Math.random()}
                               sx={{
@@ -261,7 +259,11 @@ const HomePage = () => {
                             >
                               <TableCell>{property.DaysOnMarket}</TableCell>
                               <TableCell>{property.UnparsedAddress}</TableCell>
-                              <TableCell>{formatMoney.format(property.ListPrice)}</TableCell>
+                              <TableCell 
+                                onClick={() => selectProperty(property)}
+                              >
+                                {formatMoney.format(property.ListPrice)}
+                              </TableCell>
                               <TableCell>
                                 <span>{property.ListAgentFullName}</span>
                               </TableCell>
@@ -275,7 +277,11 @@ const HomePage = () => {
                                 {property.ListAgentEmail}
                               </TableCell>
                               <TableCell>{property.ListingId}</TableCell>
-                              <TableCell component='th' scope='row'>
+                              <TableCell 
+                                onClick={() => selectProperty(property)}
+                                component='th'
+                                scope='row'
+                              >
                                 {property.BuildingName}
                               </TableCell>
                             </TableRow>
@@ -294,7 +300,10 @@ const HomePage = () => {
                             >
                              <TableCell>{property.DaysOnMarket}</TableCell>
                               <TableCell>{property.UnparsedAddress}</TableCell>
-                              <TableCell>{formatMoney.format(property.ListPrice)}</TableCell>
+                              <TableCell
+                                onClick={() => selectProperty(property)}
+                              >
+                                {formatMoney.format(property.ListPrice)}</TableCell>
                               <TableCell>
                                 <span>{property.ListAgentFullName}</span>
                               </TableCell>
@@ -308,7 +317,11 @@ const HomePage = () => {
                                 {property.ListAgentEmail}
                               </TableCell>
                               <TableCell>{property.ListingId}</TableCell>
-                              <TableCell component='th' scope='row'>
+                              <TableCell
+                                component='th'
+                                scope='row'
+                                onClick={() => selectProperty(property)}
+                              >
                                 {property.BuildingName}
                               </TableCell>
                             </TableRow>
