@@ -73,10 +73,9 @@ function Price() {
             <ListItemText>Price range</ListItemText>
           </MenuItem>
           <MenuItem disableRipple disableTouchRipple>
-            <Box sx={{ padding: "10px 20px"}}>
-              <TextField type='number' value={minPrice} onChange={(e) => handleMinPriceChange(e.target.value)} size="small" id="outlined-basic" label="Min" variant="outlined" />
-              <span style={{height: '100%'}}> - </span>
-              <TextField type='number' value={maxPrice} onChange={(e) => handleMaxPriceChange(e.target.value)} size="small" id="outlined-basic" label="Max" variant="outlined" />
+            <Box sx={{ padding: "10px 20px", display: 'flex', flexDirection: 'column', gap: '10px'}}>
+              <TextField type='number' value={minPrice === 0 ? '' : minPrice} onChange={(e) => handleMinPriceChange(e.target.value)} size="small" id="outlined-basic" label="Min" variant="outlined" />
+              <TextField type='number' value={maxPrice === 0 ? '' : maxPrice} onChange={(e) => handleMaxPriceChange(e.target.value)} size="small" id="outlined-basic" label="Max" variant="outlined" />
             </Box>
           </MenuItem>
         </MenuList>

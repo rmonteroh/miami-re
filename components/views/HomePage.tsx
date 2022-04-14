@@ -28,6 +28,8 @@ import Popup from '../ui/Popup';
 import { formatMoney } from '../../Utils';
 import Filters from '../ui/Filters/Filters';
 import { toast } from 'react-toastify';
+import { SortedColumns } from '../../types/sorted-columns.type';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
 
 
 const HomePage = () => {
@@ -39,7 +41,8 @@ const HomePage = () => {
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [properties, setProperties] = useState<PropertyData[]>([]);
-  const [inputList, setInputList] = useState<IInputValue[]>([{ inputValue: "" }]);
+  const [isAscending, setIsAscending] = useState<boolean>(false);
+  const [orderProperty, setOrderProperty] = useState<SortedColumns | ''>('');
   const observer: MutableRefObject<undefined | any> = useRef();
 
   const lastPropertyRef = useCallback(
@@ -142,6 +145,20 @@ const HomePage = () => {
     await setIsOpen(true);
   }
 
+  const sortListingByProperty = (property: SortedColumns) => {
+    // debugger;
+    let sortedListings: PropertyData[] = [];
+    if (isAscending) {
+      sortedListings = properties.sort((a, b) => (a[property]  > b[property] ? -1 : 1));
+      
+    } else {
+        sortedListings = properties.sort((a, b) => (a[property] < b[property] ? -1 : 1));
+    }
+    setOrderProperty(property);
+    setIsAscending(!isAscending);
+    setProperties(sortedListings);
+  }
+
   useEffect(() => {
     resetStore();
   }, [filterState])
@@ -230,9 +247,41 @@ const HomePage = () => {
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell>DOM</TableCell>
+                    <TableCell 
+                      style={{cursor: 'pointer'}} 
+                      onClick={() => sortListingByProperty('DaysOnMarket')}
+                    >
+                      <span style={{display: 'flex', alignItems: 'center'}}>
+                        DOM
+                        {
+                          orderProperty === 'DaysOnMarket' && (
+                            <span>
+                              {
+                                isAscending ? <ArrowUpward style={{fontSize: '12px'}} /> : <ArrowDownward style={{fontSize: '12px'}} />
+                              }
+                            </span>
+                          )
+                        }
+                      </span>
+                    </TableCell>
                     <TableCell>Address</TableCell>
-                    <TableCell>List Price</TableCell>
+                    <TableCell 
+                      style={{cursor: 'pointer'}} 
+                      onClick={() => sortListingByProperty('ListPrice')}
+                    >
+                      <span style={{display: 'flex', alignItems: 'center'}}>
+                        List Price
+                        {
+                          orderProperty === 'ListPrice' && (
+                            <span>
+                              {
+                                isAscending ? <ArrowUpward style={{fontSize: '12px'}} /> : <ArrowDownward style={{fontSize: '12px'}} />
+                              }
+                            </span>
+                          )
+                        }
+                      </span>
+                    </TableCell>
                     <TableCell>Agent Name</TableCell>
                     <TableCell>Agent Direct Phone</TableCell>
                     <TableCell>Agent Office Phone</TableCell>
@@ -290,7 +339,6 @@ const HomePage = () => {
                           return (
                             <TableRow
                               style={{cursor: 'pointer'}}
-                              onClick={() => selectProperty(property)}
                               key={Math.random()}
                               sx={{
                                 "&:last-child td, &:last-child th": {
@@ -308,13 +356,19 @@ const HomePage = () => {
                                 <span>{property.ListAgentFullName}</span>
                               </TableCell>
                               <TableCell>
-                                <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentDirectPhone}</span>
+                                <a href={`tel:${property.ListAgentDirectPhone}`}>
+                                  <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentDirectPhone}</span>
+                                </a>
                               </TableCell>
                               <TableCell>
-                                <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentOfficePhone}</span>
+                                <a href={`tel:${property.ListAgentOfficePhone}`}>
+                                  <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentOfficePhone}</span>
+                                </a>
                               </TableCell>
                               <TableCell>
-                                {property.ListAgentEmail}
+                                <a href={`mailto:${property.ListAgentEmail}`}>
+                                  <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentEmail}</span>
+                                </a>
                               </TableCell>
                               <TableCell>{property.ListingId}</TableCell>
                               <TableCell
