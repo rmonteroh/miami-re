@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Map, Marker, Popup } from "mapbox-gl";
+import mapboxgl, { Map, Marker, Popup } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useState } from "react";
 import { MapProps } from "../../../interfaces/map-props-interface";
@@ -60,12 +60,13 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
     // otherwise, create a map instance
     const mapboxMap = new Map({
       container: node,
-      accessToken:
-        "pk.eyJ1Ijoicm1vbnRlcm9oIiwiYSI6ImNsMXp4a21hazByZ2wzY24zanUxeW1qa3UifQ.kXl6ehwGh0e-os7wzXLzGQ",
+      accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN,
       style: "mapbox://styles/mapbox/streets-v11",
       center: [-80.191788, 25.761681],
       zoom: 9,
     });
+
+    mapboxMap.addControl(new mapboxgl.FullscreenControl());
 
     // save the map object to React.useState
     setMap(mapboxMap);
