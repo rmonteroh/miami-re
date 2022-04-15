@@ -23,8 +23,6 @@ export default function handler(
 
 const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
   const { page, filters }: ISearchPostData = req.body;
-  console.log('page', page);
-  
   let url = "";
   const filterList: string = createSearchQuery(filters.inputList);
   const filterQuery: string = createFilterQuery(filters);
@@ -55,8 +53,6 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const createSearchQuery = (inputList: IInputValue[]): string => {
-  console.log('inputList', inputList);
-  
   let filterList = "";
 
   inputList.map((searchValue: IInputValue) => {
@@ -72,7 +68,6 @@ const createSearchQuery = (inputList: IInputValue[]): string => {
       }
     }
   });
-console.log('filterList', filterList);
 
   return filterList;
 }
@@ -105,9 +100,9 @@ const createFilterQuery = (filters: IFiltersState): string => {
   if (homeTypes.length) {
     homeTypes.map((type: string) => {
       if (!homeQuery.length) {
-        homeQuery = homeQuery.concat(`StructureType/any(a: contains(a, '${type}'))`);
+        homeQuery = homeQuery.concat(`contains(tolower(PropertyType),'${type.toLowerCase()}')`);
       } else {
-        homeQuery = homeQuery.concat(` or StructureType/any(a: contains(a, '${type}'))`);
+        homeQuery = homeQuery.concat(` or contains(tolower(PropertyType),'${type.toLowerCase()}')`);
       }
     })
   }
