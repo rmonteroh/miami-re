@@ -63,7 +63,7 @@ const Search = ({search}: Props) => {
         </Button>
         {inputList.length > 1 && (
           <Button
-            onClick={clearSearch}
+            onClick={() => clearSearch()}
             variant='outlined'
             startIcon={<BackspaceOutlinedIcon />}
           >

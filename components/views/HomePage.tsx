@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import {
   Card,
   CardContent,
@@ -13,7 +13,6 @@ import {
   Paper,
   LinearProgress,
   Button,
-  TextField,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -29,6 +28,8 @@ import Popup from '../ui/Popup';
 import { formatMoney } from '../../Utils';
 import Filters from '../ui/Filters/Filters';
 import { toast } from 'react-toastify';
+import { SortedColumns } from '../../types/sorted-columns.type';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
 
 
 const HomePage = () => {
@@ -40,7 +41,8 @@ const HomePage = () => {
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [properties, setProperties] = useState<PropertyData[]>([]);
-  const [inputList, setInputList] = useState<IInputValue[]>([{ inputValue: "" }]);
+  const [isAscending, setIsAscending] = useState<boolean>(false);
+  const [orderProperty, setOrderProperty] = useState<SortedColumns | ''>('');
   const observer: MutableRefObject<undefined | any> = useRef();
 
   const lastPropertyRef = useCallback(
@@ -73,39 +75,45 @@ const HomePage = () => {
       await setPage(0);
     }
     await setIsLoading(true);
-    debugger;
-    const { data, status } = await propertiesApi.post("properties", {
-      page: !loadMore ? 0 : page,
-      inputList,
-      filters: filterState 
-    });
 
-    const response: BridgeResponse = data;
+    try {
+      const { data, status } = await propertiesApi.post("properties", {
+        page: !loadMore ? 0 : page,
+        filters: filterState 
+      });
+  
+      const response: BridgeResponse = data;
 
-    if (status === 200 && response.value) {
-      const { value } = response;
-      setPage(page + 1);
-      if (loadMore) {
-        setProperties([...properties, ...value]);
-      } else {
-        setProperties([...value]);
-      }
-      if (response["@odata.count"]) {
-        if (response["@odata.count"] < 200) {
+      if (status === 200 && response.value) {
+        setOrderProperty('');
+        const { value } = response;
+        setPage(page + 1);
+        if (loadMore) {
+          setProperties([...properties, ...value]);
+        } else {
+          setProperties([...value]);
+        }
+        if (response["@odata.count"]) {
+          if (response["@odata.count"] < 200) {
+            setHasMore(false);
+          }
+          setTotal(response["@odata.count"]);
+        } else {
+          setTotal(0);
+        }
+  
+        if (!value.length) {
           setHasMore(false);
         }
-        setTotal(response["@odata.count"]);
       } else {
-        setTotal(0);
+        console.log(response?.error?.message);
+        toast.error('Error trying to load properties');
       }
-
-      if (!value.length) {
-        setHasMore(false);
-      }
-    } else {
-      console.log(response?.error?.message);
+    } catch (error) {
+      console.error('error', error);
       toast.error('Error trying to load properties');
     }
+   
     setIsLoading(false);
   };
 
@@ -127,10 +135,7 @@ const HomePage = () => {
   };
 
   const resetStore = async () => {
-    // await setProperties([]);
     await setPage(0);
-    await setHasMore(true);
-    // await setTotal(0);
   };
 
   const selectProperty = async (property: PropertyData) => {
@@ -138,9 +143,21 @@ const HomePage = () => {
     await setIsOpen(true);
   }
 
+  const sortListingByProperty = (property: SortedColumns) => {
+    // debugger;
+    let sortedListings: PropertyData[] = [];
+    if (isAscending) {
+      sortedListings = properties.sort((a, b) => (a[property]  > b[property] ? -1 : 1));
+      
+    } else {
+        sortedListings = properties.sort((a, b) => (a[property] < b[property] ? -1 : 1));
+    }
+    setOrderProperty(property);
+    setIsAscending(!isAscending);
+    setProperties(sortedListings);
+  }
+
   useEffect(() => {
-    console.log('cambio filtros');
-    
     resetStore();
   }, [filterState])
   
@@ -228,9 +245,41 @@ const HomePage = () => {
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell>DOM</TableCell>
+                    <TableCell 
+                      style={{cursor: 'pointer'}} 
+                      onClick={() => sortListingByProperty('DaysOnMarket')}
+                    >
+                      <span style={{display: 'flex', alignItems: 'center'}}>
+                        DOM
+                        {
+                          orderProperty === 'DaysOnMarket' && (
+                            <span>
+                              {
+                                isAscending ? <ArrowUpward style={{fontSize: '12px'}} /> : <ArrowDownward style={{fontSize: '12px'}} />
+                              }
+                            </span>
+                          )
+                        }
+                      </span>
+                    </TableCell>
                     <TableCell>Address</TableCell>
-                    <TableCell>List Price</TableCell>
+                    <TableCell 
+                      style={{cursor: 'pointer'}} 
+                      onClick={() => sortListingByProperty('ListPrice')}
+                    >
+                      <span style={{display: 'flex', alignItems: 'center'}}>
+                        List Price
+                        {
+                          orderProperty === 'ListPrice' && (
+                            <span>
+                              {
+                                isAscending ? <ArrowUpward style={{fontSize: '12px'}} /> : <ArrowDownward style={{fontSize: '12px'}} />
+                              }
+                            </span>
+                          )
+                        }
+                      </span>
+                    </TableCell>
                     <TableCell>Agent Name</TableCell>
                     <TableCell>Agent Direct Phone</TableCell>
                     <TableCell>Agent Office Phone</TableCell>
@@ -247,7 +296,6 @@ const HomePage = () => {
                           return (
                             <TableRow
                               style={{cursor: 'pointer'}}
-                              onClick={() => selectProperty(property)}
                               ref={lastPropertyRef}
                               key={Math.random()}
                               sx={{
@@ -258,7 +306,11 @@ const HomePage = () => {
                             >
                               <TableCell>{property.DaysOnMarket}</TableCell>
                               <TableCell>{property.UnparsedAddress}</TableCell>
-                              <TableCell>{formatMoney.format(property.ListPrice)}</TableCell>
+                              <TableCell 
+                                onClick={() => selectProperty(property)}
+                              >
+                                {formatMoney.format(property.ListPrice)}
+                              </TableCell>
                               <TableCell>
                                 <span>{property.ListAgentFullName}</span>
                               </TableCell>
@@ -272,7 +324,11 @@ const HomePage = () => {
                                 {property.ListAgentEmail}
                               </TableCell>
                               <TableCell>{property.ListingId}</TableCell>
-                              <TableCell component='th' scope='row'>
+                              <TableCell 
+                                onClick={() => selectProperty(property)}
+                                component='th'
+                                scope='row'
+                              >
                                 {property.BuildingName}
                               </TableCell>
                             </TableRow>
@@ -281,7 +337,6 @@ const HomePage = () => {
                           return (
                             <TableRow
                               style={{cursor: 'pointer'}}
-                              onClick={() => selectProperty(property)}
                               key={Math.random()}
                               sx={{
                                 "&:last-child td, &:last-child th": {
@@ -291,21 +346,34 @@ const HomePage = () => {
                             >
                              <TableCell>{property.DaysOnMarket}</TableCell>
                               <TableCell>{property.UnparsedAddress}</TableCell>
-                              <TableCell>{formatMoney.format(property.ListPrice)}</TableCell>
+                              <TableCell
+                                onClick={() => selectProperty(property)}
+                              >
+                                {formatMoney.format(property.ListPrice)}</TableCell>
                               <TableCell>
                                 <span>{property.ListAgentFullName}</span>
                               </TableCell>
                               <TableCell>
-                                <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentDirectPhone}</span>
+                                <a href={`tel:${property.ListAgentDirectPhone}`}>
+                                  <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentDirectPhone}</span>
+                                </a>
                               </TableCell>
                               <TableCell>
-                                <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentOfficePhone}</span>
+                                <a href={`tel:${property.ListAgentOfficePhone}`}>
+                                  <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentOfficePhone}</span>
+                                </a>
                               </TableCell>
                               <TableCell>
-                                {property.ListAgentEmail}
+                                <a href={`mailto:${property.ListAgentEmail}`}>
+                                  <span style={{whiteSpace: 'nowrap'}}>{property.ListAgentEmail}</span>
+                                </a>
                               </TableCell>
                               <TableCell>{property.ListingId}</TableCell>
-                              <TableCell component='th' scope='row'>
+                              <TableCell
+                                component='th'
+                                scope='row'
+                                onClick={() => selectProperty(property)}
+                              >
                                 {property.BuildingName}
                               </TableCell>
                             </TableRow>

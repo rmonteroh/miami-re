@@ -22,11 +22,9 @@ export default function handler(
 }
 
 const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { inputList, page, filters }: ISearchPostData = req.body;
-  console.log('page', page);
-  
+  const { page, filters }: ISearchPostData = req.body;
   let url = "";
-  const filterList: string = createSearchQuery(inputList);
+  const filterList: string = createSearchQuery(filters.inputList);
   const filterQuery: string = createFilterQuery(filters);
   
 
@@ -43,7 +41,13 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
   }
  console.log('url', url);
  
-  const properties: BridgeResponse = await fetch(url).then((response) => response.json());
+  const properties: BridgeResponse = await fetch(url)
+    .then((response) => response.json())
+    .catch((err) => {
+      console.error(err);
+
+      return res.status(500)}
+    );
 
   res.status(200).json({ ...properties });
 };
@@ -96,9 +100,9 @@ const createFilterQuery = (filters: IFiltersState): string => {
   if (homeTypes.length) {
     homeTypes.map((type: string) => {
       if (!homeQuery.length) {
-        homeQuery = homeQuery.concat(`StructureType/any(a: contains(a, '${type}'))`);
+        homeQuery = homeQuery.concat(`contains(tolower(PropertyType),'${type.toLowerCase()}')`);
       } else {
-        homeQuery = homeQuery.concat(` or StructureType/any(a: contains(a, '${type}'))`);
+        homeQuery = homeQuery.concat(` or contains(tolower(PropertyType),'${type.toLowerCase()}')`);
       }
     })
   }

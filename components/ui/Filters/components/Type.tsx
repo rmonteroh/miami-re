@@ -5,10 +5,10 @@ import { FilterContext } from '../../../../context/filter/FilterContext';
 function Type() {
   const {filterState: {homeTypes}, setHomeTypes} = useContext(FilterContext)
   const typesActive = [
-    'House',
-    'Townhouse',
-    'Condo',
-    'Apartment',
+    'Commercial',
+    'Residential',
+    'Land/Boat Docks',
+    'Business'
   ]
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -34,14 +34,14 @@ function Type() {
     <>
       <Stack spacing={2} direction="row">
         <Badge invisible={!homeTypes.length} badgeContent={`${homeTypes.length}`} color="secondary">
-          <Button size="medium" variant="text" onClick={handleClick}>Home type</Button>
+          <Button size="medium" variant="text" onClick={(e) => handleClick(e)}>Property type</Button>
         </Badge>
         </Stack>
         <Menu
           id="basic-menu"
           anchorEl={anchorEl}
           open={open}
-          onClose={handleClose}
+          onClose={() => handleClose()}
           MenuListProps={{
             'aria-labelledby': 'basic-button',
           }}

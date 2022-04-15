@@ -54,7 +54,7 @@ function Price() {
     <>
       <Stack spacing={2} direction='row'>
       <Badge invisible={!minPrice && !maxPrice} badgeContent={showAmount()} color="secondary">
-        <Button size='medium' variant='text' onClick={handleClick}>
+        <Button size='medium' variant='text' onClick={(e) => handleClick(e)}>
           List Price
         </Button>
       </Badge>
@@ -63,7 +63,7 @@ function Price() {
         id='basic-menu'
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose()}
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
@@ -73,10 +73,9 @@ function Price() {
             <ListItemText>Price range</ListItemText>
           </MenuItem>
           <MenuItem disableRipple disableTouchRipple>
-            <Box sx={{ padding: "10px 20px"}}>
-              <TextField type='number' value={minPrice} onChange={(e) => handleMinPriceChange(e.target.value)} size="small" id="outlined-basic" label="Min" variant="outlined" />
-              <span style={{height: '100%'}}> - </span>
-              <TextField type='number' value={maxPrice} onChange={(e) => handleMaxPriceChange(e.target.value)} size="small" id="outlined-basic" label="Max" variant="outlined" />
+            <Box sx={{ padding: "10px 20px", display: 'flex', flexDirection: 'column', gap: '10px'}}>
+              <TextField type='number' value={minPrice === 0 ? '' : minPrice} onChange={(e) => handleMinPriceChange(e.target.value)} size="small" id="outlined-basic" label="Min" variant="outlined" />
+              <TextField type='number' value={maxPrice === 0 ? '' : maxPrice} onChange={(e) => handleMaxPriceChange(e.target.value)} size="small" id="outlined-basic" label="Max" variant="outlined" />
             </Box>
           </MenuItem>
         </MenuList>

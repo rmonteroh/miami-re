@@ -28,7 +28,7 @@ const CityAndCode = () => {
     <>
       <Stack spacing={2} direction='row'>
       <Badge invisible={city === '' && postalCode === ''} variant="dot" color="secondary">
-        <Button size='medium' variant='text' onClick={handleClick}>
+        <Button size='medium' variant='text' onClick={(e) => handleClick(e)}>
           City & Code
         </Button>
       </Badge>
@@ -37,7 +37,7 @@ const CityAndCode = () => {
         id='basic-menu'
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose()}
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
