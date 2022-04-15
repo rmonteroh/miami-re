@@ -130,7 +130,8 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
         selectedProperty && (
           <div style={{
             position: 'absolute',
-            top: 0,
+            top: '10px',
+            left: '10px'
           }}>
             <Card sx={{ maxWidth: 345 }}>
               {
