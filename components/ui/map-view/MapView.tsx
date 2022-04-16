@@ -145,6 +145,7 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
         <PropertyList
           showList={showList}
           properties={properties}
+          propertySelected={propertySelected}
           setShowList={setShowList}
           setPositionLeft={setPositionLeft}
           changeSelectedProperty={changeSelectedProperty}
