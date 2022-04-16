@@ -3,22 +3,21 @@ import mapboxgl, { Map, Marker, Popup } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useState } from "react";
 import { MapProps } from "../../../interfaces/map-props-interface";
-import { Button, Card, CardActions, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
-import { Media } from '../../../interfaces/bridge-response.interface';
-import Carousel from 'react-material-ui-carousel';
-import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
-import ShowerOutlinedIcon from '@mui/icons-material/ShowerOutlined';
-import SquareFootOutlinedIcon from '@mui/icons-material/SquareFootOutlined';
-import AspectRatioOutlinedIcon from '@mui/icons-material/AspectRatioOutlined';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import { PropertyData } from '../../../interfaces/bridge-response.interface';
 import { formatMoney } from "../../../Utils";
 import { toast } from 'react-toastify';
+import ListMenu from './ListMenu';
+import CardPropertyDescription from "./CardPropertyDescription";
+import PropertyList from "./PropertyList";
 
 const MapView = ({ properties, selectedProperty }: MapProps) => {
   // this is where the map instance will be stored after initialization
   const [map, setMap] = useState<Map>();
   const [markers, setMarkers] = useState<Marker[]>([]);
+  const [propertySelected, setPropertySelected] = useState<PropertyData | null>(selectedProperty);
   const [showAll, setShowAll] = useState<boolean>(true);
+  const [showList, setShowList] = useState<boolean>(false);
+  const [positionLeft, setPositionLeft] = useState<string>('55px');
 
   // React ref to store a reference to the DOM node that will be used
   // as a required parameter `container` when initializing the mapbox-gl
@@ -79,40 +78,38 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
     };
   };
 
-  const goTo = () => {
-    if (selectedProperty) {
-      if (selectedProperty.Longitude && selectedProperty.Latitude) {
+  const goTo = (property: PropertyData) => {
+    if (property) {
+      if (property.Longitude && property.Latitude) {
+        window.scrollTo(0, document.body.scrollHeight)
         map?.flyTo({
           zoom: 16,
-          center: [selectedProperty.Longitude, selectedProperty.Latitude],
+          center: [property.Longitude, property.Latitude],
         });
+        
+        const findMarker: Marker | undefined = markers.find((marker: Marker) => {
+          const {lng, lat}= marker.getLngLat();
+          return lng === property.Longitude && lat === property.Latitude
+        })
+
+        if (findMarker) {
+          findMarker.getPopup().addTo(map!);
+        }
       }else {
-        toast.warn(`The property ${selectedProperty?.BuildingName || selectedProperty?.ListingId} could not be found because it does not have the location data.`);
+        toast.warn(`The property ${property?.BuildingName || property?.ListingId} could not be found because it does not have the location data.`);
       }
     } 
   }
 
-
-  const renderImages = () => {
-    if (selectedProperty && selectedProperty.Media?.length) {
-      return (
-        <Carousel indicators={false}>
-          {selectedProperty?.Media.map((media: Media) => (
-            <CardMedia
-              key={Math.random()}
-              component='img'
-              height='150'
-              image={media.MediaURL}
-              alt='Paella dish'
-            />
-          ))}
-        </Carousel>
-      )
+  const changeSelectedProperty = async (property: PropertyData | null) => {
+    if (property) {
+      await setPropertySelected(property);
+      goTo(property);
     }
   }
 
   useEffect(() => {
-    goTo();
+    changeSelectedProperty(selectedProperty);
   }, [selectedProperty]);
 
   useEffect(() => {
@@ -124,84 +121,35 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
   }, []);
 
   return (
-    <div style={{position: 'relative', margin: '20px 0'}}>
-      <div ref={mapNode} style={{ width: "100%", height: "500px" }} />
-      {
-        selectedProperty && (
-          <div style={{
-            position: 'absolute',
-            top: '10px',
-            left: '10px'
-          }}>
-            <Card sx={{ maxWidth: 345 }}>
-              {
-                renderImages()
-              }
-              <CardContent>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                <Typography variant="subtitle1" color="text.secondary">
-                  {selectedProperty.BuildingName || selectedProperty.ListingId}
-                </Typography>
-                {
-                  showAll && (
-                    <>
-                      <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                          <BedOutlinedIcon /> Rooms:{" "}
-                        </span>
-                        {selectedProperty?.BedroomsTotal}
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                          <ShowerOutlinedIcon /> Baths:{" "}
-                        </span>
-                        {selectedProperty?.BathroomsTotalDecimal}
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                          <SquareFootOutlinedIcon /> Lot Size:{" "}
-                        </span>
-                        {selectedProperty?.LotSizeSquareFeet} {selectedProperty?.LotSizeUnits}
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                          <AspectRatioOutlinedIcon /> Living area:{" "}
-                        </span>
-                        {selectedProperty?.LivingArea} {selectedProperty?.LivingAreaUnits}
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                          <CalendarMonthOutlinedIcon /> Year Built:{" "}
-                        </span>
-                        {selectedProperty?.YearBuilt}
-                      </div>
-                      <div style={{ display: "flex", alignItems: "start", gap: "15px" }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                          <strong>Property type:</strong>{" "}
-                        </span>
-                        {selectedProperty?.PropertyType}
-                      </div>
-                    </>
-                  )
-                }
-              </div>
-              </CardContent>
-              <CardActions>
-                <Button onClick={() => goTo()} size="small">Center location</Button>
-                {
-                  showAll ? 
-                  (
-                    <Button onClick={() => setShowAll(false)} size="small">Less</Button>
-                  ) : 
-                  (
-                    <Button onClick={() => setShowAll(true)} size="small">More</Button>
-                  )
-                }
-              </CardActions>
-            </Card>
-          </div>
-        )
-      }
+    <div style={{ margin: '20px 0'}}>
+      <div ref={mapNode} style={{ width: "100%", height: "500px", position: 'relative' }}> 
+      
+        {
+          !showList && (
+            <ListMenu setPositionLeft={setPositionLeft} setShowList={setShowList} />
+          )
+        }
+
+        {
+          propertySelected && (
+            <CardPropertyDescription
+            positionLeft={positionLeft} 
+            propertySelected={propertySelected}
+            showAll={showAll}
+            setShowAll={setShowAll}
+            goTo={goTo}
+            />
+          )
+        }
+
+        <PropertyList
+          showList={showList}
+          properties={properties}
+          setShowList={setShowList}
+          setPositionLeft={setPositionLeft}
+          changeSelectedProperty={changeSelectedProperty}
+        />
+      </div>
     </div>
   );
 };

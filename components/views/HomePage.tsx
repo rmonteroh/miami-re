@@ -389,7 +389,9 @@ const HomePage = () => {
                       }
                     })
                   ) : (
-                    <TableCell>No listing found</TableCell>
+                    <TableRow>
+                      <TableCell>No listing found</TableCell>
+                    </TableRow>
                   )}
                 </TableBody>
               </Table>
