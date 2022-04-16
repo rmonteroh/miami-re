@@ -30,6 +30,7 @@ import Filters from '../ui/Filters/Filters';
 import { toast } from 'react-toastify';
 import { SortedColumns } from '../../types/sorted-columns.type';
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
+import MapView from '../ui/map-view/MapView';
 
 
 const HomePage = () => {
@@ -41,6 +42,7 @@ const HomePage = () => {
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [properties, setProperties] = useState<PropertyData[]>([]);
+  const [mapProperty, setMapProperty] = useState<PropertyData | null>(null);
   const [isAscending, setIsAscending] = useState<boolean>(false);
   const [orderProperty, setOrderProperty] = useState<SortedColumns | ''>('');
   const observer: MutableRefObject<undefined | any> = useRef();
@@ -73,6 +75,7 @@ const HomePage = () => {
       await setProperties([]);
       await setTotal(0);
       await setPage(0);
+      await setMapProperty(null);
     }
     await setIsLoading(true);
 
@@ -141,6 +144,10 @@ const HomePage = () => {
   const selectProperty = async (property: PropertyData) => {
     await setPropertySelected(property)
     await setIsOpen(true);
+  }
+
+  const selectMapProperty = async (property: PropertyData) => {
+    await setMapProperty(property)
   }
 
   const sortListingByProperty = (property: SortedColumns) => {
@@ -305,7 +312,7 @@ const HomePage = () => {
                               }}
                             >
                               <TableCell>{property.DaysOnMarket}</TableCell>
-                              <TableCell>{property.UnparsedAddress}</TableCell>
+                              <TableCell onClick={() => selectMapProperty(property)} >{property.UnparsedAddress}</TableCell>
                               <TableCell 
                                 onClick={() => selectProperty(property)}
                               >
@@ -345,7 +352,7 @@ const HomePage = () => {
                               }}
                             >
                              <TableCell>{property.DaysOnMarket}</TableCell>
-                              <TableCell>{property.UnparsedAddress}</TableCell>
+                              <TableCell onClick={() => selectMapProperty(property)}>{property.UnparsedAddress}</TableCell>
                               <TableCell
                                 onClick={() => selectProperty(property)}
                               >
@@ -382,7 +389,9 @@ const HomePage = () => {
                       }
                     })
                   ) : (
-                    <TableCell>No listing found</TableCell>
+                    <TableRow>
+                      <TableCell>No listing found</TableCell>
+                    </TableRow>
                   )}
                 </TableBody>
               </Table>
@@ -405,6 +414,7 @@ const HomePage = () => {
           )}
         </Box>
         <Popup open={open} handleClose={() => setIsOpen(false)} property={propertySelected} />
+        <MapView properties={ properties } selectedProperty={mapProperty} />
       </div>
   )
 }

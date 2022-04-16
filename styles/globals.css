@@ -14,3 +14,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right {
+  display: none;
+}
