@@ -1,23 +1,26 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import mapboxgl, { Map, Marker, Popup } from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
 import { useState } from "react";
-import { MapProps } from "../../../interfaces/map-props-interface";
-import { PropertyData } from '../../../interfaces/bridge-response.interface';
-import { formatMoney } from "../../../Utils";
-import { toast } from 'react-toastify';
-import ListMenu from './ListMenu';
+import { toast } from "react-toastify";
+import ListMenu from "./ListMenu";
 import CardPropertyDescription from "./CardPropertyDescription";
 import PropertyList from "./PropertyList";
+import { MapProps, PropertyData } from "../../../core/interfaces";
+import { formatMoney } from "../../../core/utils";
+
+import "mapbox-gl/dist/mapbox-gl.css";
 
 const MapView = ({ properties, selectedProperty }: MapProps) => {
   // this is where the map instance will be stored after initialization
   const [map, setMap] = useState<Map>();
   const [markers, setMarkers] = useState<Marker[]>([]);
-  const [propertySelected, setPropertySelected] = useState<PropertyData | null>(selectedProperty);
+  const [propertySelected, setPropertySelected] = useState<PropertyData | null>(
+    selectedProperty
+  );
   const [showAll, setShowAll] = useState<boolean>(true);
   const [showList, setShowList] = useState<boolean>(false);
-  const [positionLeft, setPositionLeft] = useState<string>('55px');
+  const [positionLeft, setPositionLeft] = useState<string>("55px");
 
   // React ref to store a reference to the DOM node that will be used
   // as a required parameter `container` when initializing the mapbox-gl
@@ -33,9 +36,15 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
         const popup = new Popup().setHTML(`
             <h3>${property.BuildingName || property.ListingId}</h3>
             <p><strong>Agent name:</strong> ${property.ListAgentFullName}</p>
-            <p><strong>Agent phone:</strong> <a href=tel:${property.ListAgentDirectPhone}}> ${property.ListAgentDirectPhone}<a></p>
-            <p><strong>Agent office:</strong> <a href=tel:${property.ListAgentOfficePhone}}>${property.ListAgentOfficePhone}<a></p>
-            <p><strong>Price:</strong> ${formatMoney.format(property.ListPrice)}</p>
+            <p><strong>Agent phone:</strong> <a href=tel:${
+              property.ListAgentDirectPhone
+            }}> ${property.ListAgentDirectPhone}<a></p>
+            <p><strong>Agent office:</strong> <a href=tel:${
+              property.ListAgentOfficePhone
+            }}>${property.ListAgentOfficePhone}<a></p>
+            <p><strong>Price:</strong> ${formatMoney.format(
+              property.ListPrice
+            )}</p>
           `);
 
         const newMarker = new Marker()
@@ -47,7 +56,7 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
       }
       setMarkers(newMarkers);
     }
-  }
+  };
 
   const initializeMap = () => {
     const node = mapNode.current;
@@ -81,32 +90,38 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
   const goTo = (property: PropertyData) => {
     if (property) {
       if (property.Longitude && property.Latitude) {
-        window.scrollTo(0, document.body.scrollHeight)
+        window.scrollTo(0, document.body.scrollHeight);
         map?.flyTo({
           zoom: 16,
           center: [property.Longitude, property.Latitude],
         });
-        
-        const findMarker: Marker | undefined = markers.find((marker: Marker) => {
-          const {lng, lat}= marker.getLngLat();
-          return lng === property.Longitude && lat === property.Latitude
-        })
+
+        const findMarker: Marker | undefined = markers.find(
+          (marker: Marker) => {
+            const { lng, lat } = marker.getLngLat();
+            return lng === property.Longitude && lat === property.Latitude;
+          }
+        );
 
         if (findMarker) {
           findMarker.getPopup().addTo(map!);
         }
-      }else {
-        toast.warn(`The property ${property?.BuildingName || property?.ListingId} could not be found because it does not have the location data.`);
+      } else {
+        toast.warn(
+          `The property ${
+            property?.BuildingName || property?.ListingId
+          } could not be found because it does not have the location data.`
+        );
       }
-    } 
-  }
+    }
+  };
 
   const changeSelectedProperty = async (property: PropertyData | null) => {
     if (property) {
       await setPropertySelected(property);
       goTo(property);
     }
-  }
+  };
 
   useEffect(() => {
     changeSelectedProperty(selectedProperty);
@@ -121,26 +136,27 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
   }, []);
 
   return (
-    <div style={{ margin: '20px 0'}}>
-      <div ref={mapNode} style={{ width: "100%", height: "500px", position: 'relative' }}> 
-      
-        {
-          !showList && (
-            <ListMenu setPositionLeft={setPositionLeft} setShowList={setShowList} />
-          )
-        }
+    <div style={{ margin: "20px 0" }}>
+      <div
+        ref={mapNode}
+        style={{ width: "100%", height: "500px", position: "relative" }}
+      >
+        {!showList && (
+          <ListMenu
+            setPositionLeft={setPositionLeft}
+            setShowList={setShowList}
+          />
+        )}
 
-        {
-          propertySelected && (
-            <CardPropertyDescription
-            positionLeft={positionLeft} 
+        {propertySelected && (
+          <CardPropertyDescription
+            positionLeft={positionLeft}
             propertySelected={propertySelected}
             showAll={showAll}
             setShowAll={setShowAll}
             goTo={goTo}
-            />
-          )
-        }
+          />
+        )}
 
         <PropertyList
           showList={showList}

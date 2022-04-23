@@ -1,20 +1,25 @@
-import { Box, Button, TextField } from '@mui/material'
-import React, { ChangeEvent } from 'react'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
-import { FilterContext } from '../../../../context/filter/FilterContext';
-import { useContext, useState } from 'react';
-import { IInputValue } from '../../../../interfaces/input-interface';
+import { Box, Button, TextField } from "@mui/material";
+import React, { ChangeEvent } from "react";
+import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
+import { FilterContext } from "../../../../context/filter/FilterContext";
+import { useContext, useState } from "react";
+import { IInputValue } from "../../../../core/interfaces";
 
 type Props = {
   search: Function;
 };
 
-const Search = ({search}: Props) => {
+const Search = ({ search }: Props) => {
   const [timer, setTimer] = useState<any>(null);
-  const {filterState: {inputList} , setInputList} = useContext(FilterContext);
+  const {
+    filterState: { inputList },
+    setInputList,
+  } = useContext(FilterContext);
 
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    index: number
+  ) => {
     if (timer) {
       clearTimeout(timer);
     }
@@ -27,19 +32,17 @@ const Search = ({search}: Props) => {
 
     const newTimer = setTimeout(() => {
       setInputList(list);
-    }, 500)
+    }, 500);
 
     setTimer(newTimer);
   };
 
   const clearSearch = () => {
-    setInputList([{inputValue: ""}]);
-  }
+    setInputList([{ inputValue: "" }]);
+  };
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", gap: "20px" }}
-    >
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       <Box
         sx={{
           display: "flex",
@@ -72,7 +75,7 @@ const Search = ({search}: Props) => {
         )}
       </Box>
     </div>
-  )
-}
+  );
+};
 
-export default Search
+export default Search;

@@ -1,8 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { BridgeResponse } from '../../../interfaces/bridge-response.interface';
-import { ISearchPostData } from '../../../interfaces/search-post-data.interface';
-import { IInputValue } from '../../../interfaces/input-interface';
-import { IFiltersState } from "../../../interfaces";
+import {
+  BridgeResponse,
+  IFiltersState,
+  IInputValue,
+  ISearchPostData,
+} from "../../../core/interfaces";
 
 type Data = {
   message: string;
@@ -26,7 +28,6 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
   let url = "";
   const filterList: string = createSearchQuery(filters.inputList);
   const filterQuery: string = createFilterQuery(filters);
-  
 
   if (filterList.length) {
     url = `${process.env.MIAMIRE_API_URL}/Properties?access_token=${
@@ -37,16 +38,18 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
   } else {
     url = `${process.env.MIAMIRE_API_URL}/Properties?access_token=${
       process.env.MLS_SERVER_TOKEN
-    }&$top=200&$filter=StandardStatus eq 'Active' and ${filterQuery}&$skip=${200 * page}`;
+    }&$top=200&$filter=StandardStatus eq 'Active' and ${filterQuery}&$skip=${
+      200 * page
+    }`;
   }
- 
+
   const properties: BridgeResponse = await fetch(url)
     .then((response) => response.json())
     .catch((err) => {
       console.error(err);
 
-      return res.status(500)}
-    );
+      return res.status(500);
+    });
 
   res.status(200).json({ ...properties });
 };
@@ -69,18 +72,37 @@ const createSearchQuery = (inputList: IInputValue[]): string => {
   });
 
   return filterList;
-}
+};
 
 const createFilterQuery = (filters: IFiltersState): string => {
-  let filterQuery = '';
-  let homeQuery = '';
-  const { bathrooms, bedrooms, minPrice, maxPrice, homeTypes, category, city, postalCode } = filters;
+  let filterQuery = "";
+  let homeQuery = "";
+  const {
+    bathrooms,
+    bedrooms,
+    minPrice,
+    maxPrice,
+    homeTypes,
+    category,
+    city,
+    postalCode,
+  } = filters;
   const minPriceQuery: string = `ListPrice ge ${minPrice || 0}`;
-  const maxPriceQuery: string = `ListPrice le ${maxPrice }`;
-  const bathroomsQuery: string = `${bathrooms === 'any' ? '' : 'BathroomsTotalDecimal ge '+ parseFloat(bathrooms)}`;
-  const bedroomsQuery: string = `${bedrooms === 'any' ? '' : 'BedroomsTotal ge '+ parseFloat(bedrooms)}`;
-  const cityQuery: string = `${city === '' ? '' : `tolower(City) eq '${city.toLowerCase()}'`}`;
-  const codeQuery: string = `${postalCode === '' ? '' : `tolower(PostalCode) eq '${postalCode}'`}`;
+  const maxPriceQuery: string = `ListPrice le ${maxPrice}`;
+  const bathroomsQuery: string = `${
+    bathrooms === "any"
+      ? ""
+      : "BathroomsTotalDecimal ge " + parseFloat(bathrooms)
+  }`;
+  const bedroomsQuery: string = `${
+    bedrooms === "any" ? "" : "BedroomsTotal ge " + parseFloat(bedrooms)
+  }`;
+  const cityQuery: string = `${
+    city === "" ? "" : `tolower(City) eq '${city.toLowerCase()}'`
+  }`;
+  const codeQuery: string = `${
+    postalCode === "" ? "" : `tolower(PostalCode) eq '${postalCode}'`
+  }`;
 
   filterQuery = filterQuery.concat(minPriceQuery);
 
@@ -99,11 +121,15 @@ const createFilterQuery = (filters: IFiltersState): string => {
   if (homeTypes.length) {
     homeTypes.map((type: string) => {
       if (!homeQuery.length) {
-        homeQuery = homeQuery.concat(`contains(tolower(PropertyType),'${type.toLowerCase()}')`);
+        homeQuery = homeQuery.concat(
+          `contains(tolower(PropertyType),'${type.toLowerCase()}')`
+        );
       } else {
-        homeQuery = homeQuery.concat(` or contains(tolower(PropertyType),'${type.toLowerCase()}')`);
+        homeQuery = homeQuery.concat(
+          ` or contains(tolower(PropertyType),'${type.toLowerCase()}')`
+        );
       }
-    })
+    });
   }
 
   if (homeQuery.length) {
@@ -119,4 +145,4 @@ const createFilterQuery = (filters: IFiltersState): string => {
   }
 
   return filterQuery;
-}
+};

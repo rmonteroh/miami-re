@@ -1,15 +1,15 @@
-import { AppBar, IconButton, Toolbar, Typography } from "@mui/material"
-import MenuOutlined from '@mui/icons-material/MenuOutlined'
+import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
+import MenuOutlined from "@mui/icons-material/MenuOutlined";
 
 export const NavBar = () => {
   return (
-    <AppBar position="static">
+    <AppBar position='static'>
       <Toolbar>
-        <IconButton style={{color: 'white'}}>
+        <IconButton style={{ color: "white" }}>
           <MenuOutlined />
         </IconButton>
-        <Typography variant="h6">Miami RE</Typography>
+        <Typography variant='h6'>Miami RE</Typography>
       </Toolbar>
     </AppBar>
-  )
-}
+  );
+};

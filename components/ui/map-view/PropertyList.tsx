@@ -11,7 +11,7 @@ import {
   Divider,
 } from "@mui/material";
 import { House, Close } from "@mui/icons-material";
-import { PropertyData } from "../../../interfaces/bridge-response.interface";
+import { PropertyData } from "../../../core/interfaces";
 
 interface IProps {
   showList: boolean;
@@ -66,7 +66,15 @@ const PropertyList = ({
         sx={{ width: "100%", maxWidth: 360, height: "100%", overflowY: "auto" }}
       >
         {properties.map((property: PropertyData) => (
-          <div key={property.ListingId} style={{backgroundColor: property.ListingId === propertySelected?.ListingId ? '#1976d2' : 'white' }}>
+          <div
+            key={property.ListingId}
+            style={{
+              backgroundColor:
+                property.ListingId === propertySelected?.ListingId
+                  ? "#1976d2"
+                  : "white",
+            }}
+          >
             <ListItem
               alignItems='flex-start'
               style={{ cursor: "pointer" }}

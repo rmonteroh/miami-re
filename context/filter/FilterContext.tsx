@@ -1,6 +1,5 @@
 import React, { createContext } from 'react'
-import { IFiltersState } from '../../interfaces/filter-interface';
-import { IInputValue } from '../../interfaces/input-interface';
+import { IFiltersState, IInputValue } from '../../core/interfaces';
 
 export type FilterContentProps = {
   filterState: IFiltersState;
