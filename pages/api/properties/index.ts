@@ -1,4 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { FilterUrlBuilder } from "../../../core/builders";
+import { ModifiersType, OperatorsType } from "../../../core/enums";
 import {
   BridgeResponse,
   IFiltersState,
@@ -25,7 +27,46 @@ export default function handler(
 
 const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
   const { page, filters }: ISearchPostData = req.body;
-  let url = "";
+  const {
+    bathrooms,
+    bedrooms,
+    minPrice,
+    maxPrice,
+    homeTypes,
+    city,
+    postalCode,
+  } = filters;
+  const baseUrl = `${process.env.MIAMIRE_API_URL}/Properties?access_token=${
+    process.env.MLS_SERVER_TOKEN
+  }`;
+  // Max value permitted by bridge api
+  const maxValuesPerRequest = 200;
+  const propertyUrlBuilder = new FilterUrlBuilder();
+  const searchCriteria = getSearchQuery(filters.inputList);
+
+console.log('searchCriteria', searchCriteria);
+
+  const filterUrl: string = propertyUrlBuilder.equalsTo('StandardStatus', 'Active')
+    .greaterThanOrEquals('ListPrice', minPrice)
+    .lessThanOrEquals('ListPrice', maxPrice)
+    .greaterThanOrEquals('BedroomsTotal', (bedrooms && bedrooms !== 'any') ? parseFloat(bedrooms) : 0)
+    .greaterThanOrEquals('BathroomsTotalDecimal', (bathrooms && bathrooms !== 'any') ? parseFloat(bathrooms) : 0)
+    .orContains('PropertyType', homeTypes)
+    //.comparedWithModifier('City', ModifiersType.Lowercase, OperatorsType.Equal, city.toLowerCase())
+    .equalsTo('City', city.toLowerCase())
+    .equalsTo('PostalCode', postalCode)
+    .orContains('PublicRemarks', searchCriteria)
+    .orContains('PrivateRemarks', searchCriteria)
+    .setResultsSize(maxValuesPerRequest)
+    .setSkipResults(maxValuesPerRequest * page)
+    .build();
+
+console.log('filterUrl', `${baseUrl}&${filterUrl}`);
+
+/* return res.status(200).json({}); */
+
+
+ /*  let url = "";
   const filterList: string = createSearchQuery(filters.inputList);
   const filterQuery: string = createFilterQuery(filters);
 
@@ -41,9 +82,9 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
     }&$top=200&$filter=StandardStatus eq 'Active' and ${filterQuery}&$skip=${
       200 * page
     }`;
-  }
+  } */
 
-  const properties: BridgeResponse = await fetch(url)
+  const properties: BridgeResponse = await fetch(`${baseUrl}&${filterUrl}`)
     .then((response) => response.json())
     .catch((err) => {
       console.error(err);
@@ -54,7 +95,18 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(200).json({ ...properties });
 };
 
-const createSearchQuery = (inputList: IInputValue[]): string => {
+const getSearchQuery = (searchValue: IInputValue[]) => {
+  const searchCriteria: string[] = [];
+  for (const search of searchValue) {
+    if (search.inputValue !== '') {
+      searchCriteria.push(search.inputValue);
+    }
+  }
+
+  return searchCriteria;
+};
+
+/* const createSearchQuery = (inputList: IInputValue[]): string => {
   let filterList = "";
 
   inputList.map((searchValue: IInputValue) => {
@@ -72,8 +124,8 @@ const createSearchQuery = (inputList: IInputValue[]): string => {
   });
 
   return filterList;
-};
-
+}; */
+/* 
 const createFilterQuery = (filters: IFiltersState): string => {
   let filterQuery = "";
   let homeQuery = "";
@@ -145,4 +197,4 @@ const createFilterQuery = (filters: IFiltersState): string => {
   }
 
   return filterQuery;
-};
+}; */
