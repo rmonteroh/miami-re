@@ -9,3 +9,8 @@ export enum OperatorsType {
   Or = 'or',
   Not = 'not',
 }
+
+export enum AndOrOperatorType {
+  And = 'and',
+  Or = 'or',
+}
