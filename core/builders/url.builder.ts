@@ -14,7 +14,7 @@ export class FilterUrlBuilder {
     }
 
     if (this.isFilterEmpty()) {
-      this.url = this.url.concat(`${ModifiersType.Lowercase}(${property}) ${OperatorsType.Equal} '${value}'`);
+      this.url = this.url.concat(`${ModifiersType.Lowercase}(${property}) ${OperatorsType.Equal} '${value.toLowerCase()}'`);
     } else {
       this.url = this.url.concat(` ${OperatorsType.And} ${ModifiersType.Lowercase}(${property}) ${OperatorsType.Equal} '${value}'`);
     }
@@ -158,7 +158,7 @@ export class FilterUrlBuilder {
     if (this.isFilterEmpty()) {
       this.url = this.url.concat(containQuery);
     } else {
-      this.url = this.url.concat(` and (${containQuery})`);
+      this.url = this.url.concat(` and ${containQuery}`);
     }
 
     return this;
@@ -217,6 +217,10 @@ export class FilterUrlBuilder {
   }
 
   public build() {
+    if (this.isFilterEmpty()) {
+      return "";
+    }
+
     return this.url;
   }
 
