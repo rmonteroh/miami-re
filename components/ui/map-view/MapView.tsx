@@ -108,9 +108,9 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
         }
       } else {
         toast.warn(
-          `The property ${
+          `We couldn't locate the property ${
             property?.BuildingName || property?.ListingId
-          } could not be found because it does not have the location data.`
+          } on the map because it does not have the coordinates of its location.`
         );
       }
     }

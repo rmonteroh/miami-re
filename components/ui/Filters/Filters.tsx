@@ -23,10 +23,11 @@ function Filters({ search }: Props) {
           style={{
             padding: "10px 15px",
             display: "flex",
+            flexWrap: "wrap",
             justifyContent: "space-between",
           }}
         >
-          <Stack spacing={2} direction='row'>
+          <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
             {/* <Category /> */}
             <Price />
             <Spaces />

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { FilterUrlBuilder } from "../../../core/builders";
-import { ModifiersType, OperatorsType } from "../../../core/enums";
+import { AndOrOperatorType, ModifiersType, OperatorsType } from "../../../core/enums";
 import {
   BridgeResponse,
   IFiltersState,
@@ -42,19 +42,27 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
   // Max value permitted by bridge api
   const maxValuesPerRequest = 200;
   const propertyUrlBuilder = new FilterUrlBuilder();
-  const searchCriteria = getSearchQuery(filters.inputList);
+  const searchProperties: string[] = ['PublicRemarks', 'PrivateRemarks'];
+  const searchCriteria: string[] = getSearchQuery(filters.inputList);
+  const formattedBedrooms = (bedrooms && bedrooms !== 'any') ? parseFloat(bedrooms) : 0;
+  const formattedBathrooms = (bathrooms && bathrooms !== 'any') ? parseFloat(bathrooms) : 0;
 
+  /**
+   * Example of filter builder result
+   * $filter=tolower(StandardStatus) eq 'active' and ListPrice ge 3000000 and ListPrice le 120000000 and contains(tolower(PropertyType),'residential') and
+   *  tolower(City) eq 'miami' and tolower(PostalCode) eq '33127' and (contains(tolower(PublicRemarks),'tlc') or contains(tolower(PublicRemarks),'investment') or
+   *  contains(tolower(PrivateRemarks),'tlc') or contains(tolower(PrivateRemarks),'investment'))&$top=200&$skip=0
+   */
   const filterUrl: string = propertyUrlBuilder
     .equalsTo('StandardStatus', 'Active')
     .greaterThanOrEquals('ListPrice', minPrice)
     .lessThanOrEquals('ListPrice', maxPrice)
-    .greaterThanOrEquals('BedroomsTotal', (bedrooms && bedrooms !== 'any') ? parseFloat(bedrooms) : 0)
-    .greaterThanOrEquals('BathroomsTotalDecimal', (bathrooms && bathrooms !== 'any') ? parseFloat(bathrooms) : 0)
+    .greaterThanOrEquals('BedroomsTotal', formattedBedrooms)
+    .greaterThanOrEquals('BathroomsTotalDecimal', formattedBathrooms)
     .orContains('PropertyType', homeTypes)
-    .equalsTo('City', city.toLowerCase())
+    .equalsTo('City', city)
     .equalsTo('PostalCode', postalCode)
-    .orContains('PublicRemarks', searchCriteria)
-    .orContains('PrivateRemarks', searchCriteria)
+    .propertiesContains(searchProperties, searchCriteria, AndOrOperatorType.Or)
     .setResultsSize(maxValuesPerRequest)
     .setSkipResults(maxValuesPerRequest * page)
     .build();

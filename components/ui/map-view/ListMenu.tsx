@@ -13,8 +13,8 @@ const ListMenu = ({ setPositionLeft, setShowList }: IProps) => {
       <IconButton
         style={{
           display: "absolute",
-          top: 0,
-          left: 0,
+          top: '5px',
+          left: '5px',
           zIndex: 1,
           backgroundColor: "white",
         }}
