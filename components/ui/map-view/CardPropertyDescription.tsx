@@ -1,10 +1,6 @@
 import React from "react";
 import Carousel from "react-material-ui-carousel";
 import {
-  PropertyData,
-  Media,
-} from "../../../interfaces/bridge-response.interface";
-import {
   CardMedia,
   Card,
   CardContent,
@@ -17,6 +13,7 @@ import ShowerOutlinedIcon from "@mui/icons-material/ShowerOutlined";
 import SquareFootOutlinedIcon from "@mui/icons-material/SquareFootOutlined";
 import AspectRatioOutlinedIcon from "@mui/icons-material/AspectRatioOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import { Media, PropertyData } from "../../../core/interfaces";
 
 interface IProps {
   positionLeft: string;

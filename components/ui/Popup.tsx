@@ -10,8 +10,6 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-
-import { PropertyData, Media } from "../../interfaces/bridge-response.interface";
 import Carousel from "react-material-ui-carousel";
 import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
 import ShowerOutlinedIcon from "@mui/icons-material/ShowerOutlined";
@@ -20,8 +18,9 @@ import AspectRatioOutlinedIcon from "@mui/icons-material/AspectRatioOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 
 import Highlighter from "react-highlight-words";
-import { useContext } from 'react';
-import { FilterContext } from '../../context/filter/FilterContext';
+import { useContext } from "react";
+import { FilterContext } from "../../context/filter/FilterContext";
+import { Media, PropertyData } from "../../core/interfaces";
 
 type Props = {
   open: boolean;
@@ -30,16 +29,18 @@ type Props = {
 };
 
 const Popup = ({ open, handleClose, property }: Props) => {
-  const {filterState: { inputList }} = useContext(FilterContext);
+  const {
+    filterState: { inputList },
+  } = useContext(FilterContext);
 
   const fillSearchHighlight = () => {
-    const searchHighlight : string[] = [];
+    const searchHighlight: string[] = [];
     inputList.map((search) => {
       searchHighlight.push(search.inputValue);
     });
 
     return searchHighlight;
-  }
+  };
 
   const renderImages = () => {
     if (property && property.Media?.length) {
@@ -55,10 +56,9 @@ const Popup = ({ open, handleClose, property }: Props) => {
             />
           ))}
         </Carousel>
-      )
+      );
     }
-  }
-  
+  };
 
   return (
     <Dialog
@@ -68,11 +68,7 @@ const Popup = ({ open, handleClose, property }: Props) => {
       aria-describedby='alert-dialog-slide-description'
     >
       <DialogTitle>{property?.BuildingName?.toUpperCase()}</DialogTitle>
-      <Card>
-        {
-          renderImages()
-        }
-      </Card>
+      <Card>{renderImages()}</Card>
       <DialogContent sx={{ minWidth: 320 }}>
         <DialogContentText id='alert-dialog-slide-description'>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -112,27 +108,41 @@ const Popup = ({ open, handleClose, property }: Props) => {
               </span>
               {property?.PropertyType}
             </div>
-            <div style={{ display: "flex", flexDirection: 'column', alignItems: "start", gap: "15px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "start",
+                gap: "15px",
+              }}
+            >
               <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <strong>Public remark:</strong> {" "}
+                <strong>Public remark:</strong>{" "}
               </span>
               <Highlighter
-                  highlightClassName="YourHighlightClass"
-                  searchWords={[...fillSearchHighlight()]}
-                  autoEscape={true}
-                  textToHighlight={property?.PublicRemarks || '-'}
-                />
+                highlightClassName='YourHighlightClass'
+                searchWords={[...fillSearchHighlight()]}
+                autoEscape={true}
+                textToHighlight={property?.PublicRemarks || "-"}
+              />
             </div>
-            <div style={{ display: "flex", flexDirection: 'column', alignItems: "start", gap: "15px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "start",
+                gap: "15px",
+              }}
+            >
               <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <strong>Private remark:</strong> {" "}
+                <strong>Private remark:</strong>{" "}
               </span>
               <Highlighter
-                  highlightClassName="YourHighlightClass"
-                  searchWords={[...fillSearchHighlight()]}
-                  autoEscape={true}
-                  textToHighlight={property?.PrivateRemarks || '-'}
-                />
+                highlightClassName='YourHighlightClass'
+                searchWords={[...fillSearchHighlight()]}
+                autoEscape={true}
+                textToHighlight={property?.PrivateRemarks || "-"}
+              />
             </div>
           </div>
         </DialogContentText>

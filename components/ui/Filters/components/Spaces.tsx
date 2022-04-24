@@ -12,10 +12,14 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useContext } from "react";
-import { FilterContext } from '../../../../context/filter/FilterContext';
+import { FilterContext } from "../../../../context/filter/FilterContext";
 
 function Spaces() {
-  const {filterState: {bathrooms, bedrooms}, setBathrooms, setBedrooms} = useContext(FilterContext)
+  const {
+    filterState: { bathrooms, bedrooms },
+    setBathrooms,
+    setBedrooms,
+  } = useContext(FilterContext);
   const bathList = ["any", "1+", "1.5+", "2+", "3+", "4+"];
   const bedList = ["any", "1+", "2+", "3+", "4+", "5+"];
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -48,7 +52,11 @@ function Spaces() {
   return (
     <>
       <Stack spacing={2} direction='row'>
-        <Badge invisible={bedrooms === 'any' && bathrooms === 'any'} badgeContent={`${bedrooms} - ${bathrooms}`} color="secondary">
+        <Badge
+          invisible={bedrooms === "any" && bathrooms === "any"}
+          badgeContent={`${bedrooms} - ${bathrooms}`}
+          color='secondary'
+        >
           <Button size='medium' variant='text' onClick={(e) => handleClick(e)}>
             Beds & Bath
           </Button>
