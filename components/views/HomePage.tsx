@@ -455,7 +455,7 @@ const HomePage = () => {
         handleClose={() => setIsOpen(false)}
         property={propertySelected}
       />
-      <MapView properties={properties} selectedProperty={mapProperty} />
+      <MapView properties={properties} selectedProperty={mapProperty} isLoading={isLoading} />
     </div>
   );
 };
