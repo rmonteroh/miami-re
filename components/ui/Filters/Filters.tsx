@@ -9,6 +9,7 @@ import { FilterContext } from "../../../context/filter/FilterContext";
 import { useContext } from "react";
 import CityAndCode from "./components/CityAndCode";
 import Search from "./components/Search";
+import Dom from "./components/Dom";
 
 type Props = {
   search: Function;
@@ -33,6 +34,7 @@ function Filters({ search }: Props) {
             <Spaces />
             <Type />
             <CityAndCode />
+            <Dom />
           </Stack>
           <Button size='medium' variant='text' onClick={() => setFilters()}>
             Clear filters

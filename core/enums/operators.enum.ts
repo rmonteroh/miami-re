@@ -14,3 +14,8 @@ export enum AndOrOperatorType {
   And = 'and',
   Or = 'or',
 }
+
+export enum LessThanType {
+  Less = 'Less',
+  More = 'More',
+}

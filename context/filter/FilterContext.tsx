@@ -1,5 +1,6 @@
 import React, { createContext } from 'react'
 import { IFiltersState, IInputValue } from '../../core/interfaces';
+import { IDom } from '../../core/interfaces/dom-interface';
 
 export type FilterContentProps = {
   filterState: IFiltersState;
@@ -13,6 +14,7 @@ export type FilterContentProps = {
   setPostalCode: (id: string) => void;
   setFilters: () => void;
   setInputList: (list: IInputValue[]) => void;
+  setDOM: (id: IDom) => void;
 }
 
 export const FilterContext = createContext<FilterContentProps>({} as FilterContentProps);

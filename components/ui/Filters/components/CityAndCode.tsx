@@ -12,6 +12,7 @@ import { Box } from "@mui/system";
 import React from "react";
 import { useContext } from "react";
 import { FilterContext } from "../../../../context/filter/FilterContext";
+import {useEffect} from 'react';
 
 const CityAndCode = () => {
   const {
@@ -20,6 +21,8 @@ const CityAndCode = () => {
     setPostalCode,
   } = useContext(FilterContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [citi, setCiti] = React.useState<string>(city);
+  const [code, setCode] = React.useState<string>(postalCode);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -29,12 +32,25 @@ const CityAndCode = () => {
   };
 
   const handleCityChange = (city: string) => {
-    setCityTypes(city);
+    setCiti(city);
   };
 
   const handleCodeChange = (code: string) => {
-    setPostalCode(code);
+    setCode(code);
   };
+
+  const apply = () => {
+    setCityTypes(citi);
+    setPostalCode(code);
+    handleClose();
+  }
+
+  useEffect(() => {
+    setCiti(city);
+    setCode(postalCode);
+    
+  }, [city, postalCode])
+  
 
   return (
     <>
@@ -63,9 +79,9 @@ const CityAndCode = () => {
             <ListItemText>City and postal code</ListItemText>
           </MenuItem>
           <MenuItem disableRipple disableTouchRipple>
-            <Box sx={{ padding: "10px 20px" }}>
+            <Box>
               <TextField
-                value={city}
+                value={citi}
                 onChange={(e) => handleCityChange(e.target.value)}
                 size='small'
                 id='outlined-basic'
@@ -75,15 +91,21 @@ const CityAndCode = () => {
             </Box>
           </MenuItem>
           <MenuItem disableRipple disableTouchRipple>
-            <Box sx={{ padding: "10px 20px" }}>
+            <Box>
               <TextField
-                value={postalCode}
+                value={code}
                 onChange={(e) => handleCodeChange(e.target.value)}
                 size='small'
                 id='outlined-basic'
                 label='Code'
                 variant='outlined'
               />
+            </Box>
+          </MenuItem>
+          <MenuItem disableRipple disableTouchRipple>
+          <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+              <Button size="small" onClick={handleClose}>Close</Button>
+              <Button size="small" variant="contained" onClick={apply}>Apply</Button>
             </Box>
           </MenuItem>
         </MenuList>

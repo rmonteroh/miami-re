@@ -3,6 +3,8 @@ import { FilterContext } from "./FilterContext";
 import FilterReducer from "./FilterReducer";
 import { toast } from "react-toastify";
 import { IFiltersState, IInputValue } from "../../core/interfaces";
+import { IDom } from '../../core/interfaces/dom-interface';
+import { LessThanType } from "../../core/enums";
 
 const INITIAL_STATE: IFiltersState = {
   category: "sale",
@@ -14,6 +16,10 @@ const INITIAL_STATE: IFiltersState = {
   city: "",
   postalCode: "",
   inputList: [{ inputValue: "" }],
+  dom: {
+    operator: LessThanType.More,
+    days: 0
+  },
 };
 
 type Props = {
@@ -63,6 +69,10 @@ const FilterProvider = ({ children }: Props) => {
     dispatch({ type: "setInputList", payload: inputList });
   };
 
+  const setDOM = (dom: IDom) => {
+    dispatch({ type: "setDom", payload: dom });
+  };
+
   return (
     <FilterContext.Provider
       value={{
@@ -77,6 +87,7 @@ const FilterProvider = ({ children }: Props) => {
         setCityTypes,
         setPostalCode,
         setInputList,
+        setDOM,
       }}
     >
       {children}
