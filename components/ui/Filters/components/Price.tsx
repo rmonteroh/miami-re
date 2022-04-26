@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Stack from "@mui/material/Stack";
 import {
   Badge,
@@ -21,6 +21,8 @@ function Price() {
     setMaxPrice,
   } = useContext(FilterContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [lowerPrice, setLowerPrice] = React.useState<number>(minPrice);
+  const [hightPrice, setHightPrice] = React.useState<number>(maxPrice);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -31,20 +33,26 @@ function Price() {
 
   const handleMinPriceChange = (minValue: string) => {
     if (Number(minValue) < 0) {
-      setMinPrice(0);
+      setLowerPrice(0);
       return;
     }
 
-    setMinPrice(Number(minValue));
+    setLowerPrice(Number(minValue));
 
     if (!maxPrice || Number(minValue) > maxPrice) {
-      setMaxPrice(Number(minValue));
+      setHightPrice(Number(minValue));
     }
   };
 
   const handleMaxPriceChange = (maxValue: string) => {
-    setMaxPrice(Number(maxValue));
+    setHightPrice(Number(maxValue));
   };
+
+  const apply = () => {
+    setMinPrice(lowerPrice);
+    setMaxPrice(hightPrice);
+    handleClose();
+  }
 
   const showAmount = (): string => {
     const minValue = formatCompactNumber.format(minPrice);
@@ -52,6 +60,12 @@ function Price() {
 
     return `${minValue} - ${maxValue}`;
   };
+
+  useEffect(() => {
+    setLowerPrice(minPrice);
+    setHightPrice(maxPrice);
+  }, [minPrice, maxPrice])
+  
 
   return (
     <>
@@ -82,7 +96,6 @@ function Price() {
           <MenuItem disableRipple disableTouchRipple>
             <Box
               sx={{
-                padding: "10px 20px",
                 display: "flex",
                 flexDirection: "column",
                 gap: "10px",
@@ -90,7 +103,7 @@ function Price() {
             >
               <TextField
                 type='number'
-                value={minPrice === 0 ? "" : minPrice}
+                value={lowerPrice === 0 ? "" : lowerPrice}
                 onChange={(e) => handleMinPriceChange(e.target.value)}
                 size='small'
                 id='outlined-basic'
@@ -99,13 +112,17 @@ function Price() {
               />
               <TextField
                 type='number'
-                value={maxPrice === 0 ? "" : maxPrice}
+                value={hightPrice === 0 ? "" : hightPrice}
                 onChange={(e) => handleMaxPriceChange(e.target.value)}
                 size='small'
                 id='outlined-basic'
                 label='Max'
                 variant='outlined'
               />
+              <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+                <Button size="small" onClick={handleClose}>Close</Button>
+                <Button size="small" variant="contained" onClick={apply}>Apply</Button>
+              </Box>
             </Box>
           </MenuItem>
         </MenuList>

@@ -1,5 +1,6 @@
 import {
   Badge,
+  Box,
   Button,
   Checkbox,
   ListItemIcon,
@@ -11,6 +12,7 @@ import {
 } from "@mui/material";
 import React, { useContext } from "react";
 import { FilterContext } from "../../../../context/filter/FilterContext";
+import { useEffect } from 'react';
 
 function Type() {
   const {
@@ -24,6 +26,7 @@ function Type() {
     "Business",
   ];
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [typesList, setTypeList] = React.useState<string[]>([...homeTypes]);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -33,15 +36,26 @@ function Type() {
   };
 
   const addHome = (homeType: string) => {
-    const typeList: Set<string> = new Set<string>([...homeTypes]);
+    const typeList: Set<string> = new Set<string>([...typesList]);
 
     if (typeList.has(homeType)) {
       typeList.delete(homeType);
     } else {
       typeList.add(homeType);
     }
-    setHomeTypes(Array.from(typeList));
+    setTypeList(Array.from(typeList));
+    // setHomeTypes(Array.from(typeList));
   };
+
+  const apply = () => {
+    setHomeTypes(typesList);
+    handleClose();
+  }
+
+  useEffect(() => {
+    setTypeList(homeTypes);
+  }, [homeTypes])
+  
 
   return (
     <>
@@ -69,11 +83,17 @@ function Type() {
           {typesActive.map((type: string) => (
             <MenuItem key={Math.random()} onClick={() => addHome(type)}>
               <ListItemIcon>
-                <Checkbox checked={homeTypes.includes(type)} />
+                <Checkbox checked={typesList.includes(type)} />
               </ListItemIcon>
               <ListItemText>{type}</ListItemText>
             </MenuItem>
           ))}
+          <MenuItem disableRipple disableTouchRipple sx={{display: 'flex', justifyContent: 'end'}}>
+            <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+              <Button size="small" onClick={handleClose}>Close</Button>
+              <Button size="small" variant="contained" onClick={apply}>Apply</Button>
+            </Box>
+          </MenuItem>
         </MenuList>
       </Menu>
     </>

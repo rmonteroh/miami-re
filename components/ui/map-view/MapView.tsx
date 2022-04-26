@@ -11,7 +11,7 @@ import { formatMoney } from "../../../core/utils";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
-const MapView = ({ properties, selectedProperty }: MapProps) => {
+const MapView = ({ properties, selectedProperty, isLoading }: MapProps) => {
   // this is where the map instance will be stored after initialization
   const [map, setMap] = useState<Map>();
   const [markers, setMarkers] = useState<Marker[]>([]);
@@ -130,6 +130,13 @@ const MapView = ({ properties, selectedProperty }: MapProps) => {
   useEffect(() => {
     updateMarkets();
   }, [properties]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setPropertySelected(null);
+      updateMarkets();
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     initializeMap();

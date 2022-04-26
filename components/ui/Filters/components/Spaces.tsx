@@ -1,5 +1,6 @@
 import {
   Badge,
+  Box,
   Button,
   Divider,
   ListItemText,
@@ -11,7 +12,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { FilterContext } from "../../../../context/filter/FilterContext";
 
 function Spaces() {
@@ -23,6 +24,8 @@ function Spaces() {
   const bathList = ["any", "1+", "1.5+", "2+", "3+", "4+"];
   const bedList = ["any", "1+", "2+", "3+", "4+", "5+"];
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [beds, setBeds] = React.useState<string>(bedrooms);
+  const [baths, setBaths] = React.useState<string>(bathrooms);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -36,7 +39,7 @@ function Spaces() {
     bedrooms: string
   ) => {
     if (bedrooms !== null) {
-      setBedrooms(bedrooms);
+      setBeds(bedrooms);
     }
   };
 
@@ -45,9 +48,21 @@ function Spaces() {
     bathrooms: string
   ) => {
     if (bathrooms !== null) {
-      setBathrooms(bathrooms);
+      setBaths(bathrooms);
     }
   };
+
+  const apply = () => {
+    setBedrooms(beds);
+    setBathrooms(baths);
+    handleClose();
+  }
+
+
+  useEffect(() => {
+    setBaths(bathrooms);
+    setBeds(bedrooms);
+  }, [bathrooms, bedrooms])
 
   return (
     <>
@@ -70,6 +85,7 @@ function Spaces() {
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
+        hideBackdrop={false}
       >
         <MenuList>
           <MenuItem disableRipple disableTouchRipple>
@@ -77,7 +93,7 @@ function Spaces() {
           </MenuItem>
           <MenuItem disableRipple disableTouchRipple>
             <ToggleButtonGroup
-              value={bedrooms}
+              value={beds}
               exclusive
               onChange={handleBedrooms}
               aria-label='device'
@@ -95,7 +111,7 @@ function Spaces() {
           </MenuItem>
           <MenuItem disableRipple disableTouchRipple>
             <ToggleButtonGroup
-              value={bathrooms}
+              value={baths}
               exclusive
               onChange={handleBathrooms}
               aria-label='device'
@@ -110,6 +126,12 @@ function Spaces() {
                 </ToggleButton>
               ))}
             </ToggleButtonGroup>
+          </MenuItem>
+          <MenuItem disableRipple disableTouchRipple>
+            <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+              <Button size="small" onClick={handleClose}>Close</Button>
+              <Button size="small" variant="contained" onClick={apply}>Apply</Button>
+            </Box>
           </MenuItem>
         </MenuList>
       </Menu>

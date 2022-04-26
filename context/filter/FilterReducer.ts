@@ -1,5 +1,7 @@
  import React from 'react'
+import { LessThanType } from '../../core/enums';
 import { IFiltersState, IInputValue } from '../../core/interfaces'
+import { IDom } from '../../core/interfaces/dom-interface';
 
 type FilterAction =
   | {type: 'setCategory', payload: string}
@@ -12,6 +14,7 @@ type FilterAction =
   | {type: 'setPostalCode', payload: string}
   | {type: 'setInputList', payload: IInputValue[]}
   | {type: 'resetFilters'}
+  | {type: 'setDom', payload: IDom}
  
  const FilterReducer = (state: IFiltersState, action: FilterAction): IFiltersState => {
 
@@ -61,6 +64,11 @@ type FilterAction =
          ...state,
          inputList: action.payload
        }
+     case 'setDom':
+       return {
+         ...state,
+         dom: action.payload
+       }
      case 'resetFilters':
        return {
           category: 'sale',
@@ -72,6 +80,10 @@ type FilterAction =
           city: '',
           postalCode: '',
           inputList: [{ inputValue: "" }],
+          dom: {
+            operator: LessThanType.More,
+            days: 0
+          },
        }
    
      default:
