@@ -76,8 +76,6 @@ const filterProperties = async (req: NextApiRequest, res: NextApiResponse) => {
     .setSkipResults(maxValuesPerRequest * page)
     .build();
 
-    console.log('filterUrl', filterUrl);
-    
   const properties: BridgeResponse = await fetch(`${baseUrl}&${filterUrl}`)
     .then((response) => response.json())
     .catch((err) => {
